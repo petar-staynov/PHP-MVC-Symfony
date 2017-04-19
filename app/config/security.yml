@@ -1,0 +1,31 @@
+security:
+    encoders:
+        WebStoreBundle\Entity\User: bcrypt
+
+    providers:
+        admin:
+          memory:
+            users:
+              admin: { password: admin, roles: ['ROLE_ADMIN']}
+        database_users:
+            entity: { class: WebStoreBundle:User, property: username }
+
+    firewalls:
+        secured_area:
+            pattern: ^/admin
+            anonymous: true
+            form_login:
+                check_path: security_login
+                login_path: security_login
+                csrf_token_generator: security.csrf.token_manager
+
+            logout:
+                path: security_logout
+                target: store_index
+
+
+    access_control:
+        # this is a catch-all for the admin area
+        # additional security lives in the controllers
+#        - { path: '^/(%locale%)/admin', roles: ROLE_ADMIN }
+
