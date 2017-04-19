@@ -42,13 +42,13 @@ class User implements UserInterface
      * @var string;
      * @Assert\Length(max=4096)
      */
-//    private $plainPassword;
-//
-//    /**
-//     * @var string
-//     *
-//     * @ORM\Column(name="password", type="string", length=255)
-//     */
+    private $plainPassword;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="password", type="string", length=255)
+     */
     private $password;
 
     /**
@@ -148,15 +148,15 @@ class User implements UserInterface
         return $this->username;
     }
 
-//    public function getPlainPassword()
-//    {
-//        return $this->plainPassword;
-//    }
-//
-//    public function setPlainPassword($password)
-//    {
-//        $this->plainPassword = $password;
-//    }
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword($password)
+    {
+        $this->plainPassword = $password;
+    }
 
     /**
      * Set password
