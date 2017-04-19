@@ -38,10 +38,11 @@
                             {% if app.user %}
                                 <li><a href="#">My Profile</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="#">Logout</a></li>
+                                <li><a href="{{ path('user_logout') }}">Logout</a></li>
+                            {% else %}
+                                <li><a href="{{ path('security_login') }}">Login</a></li>
+                                <li><a href="{{ path('user_register') }}">Register</a></li>
                             {% endif %}
-                            <li><a href="{{ path('security_login') }}">Login</a></li>
-                            <li><a href="{{ path('user_register') }}">Register</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -51,10 +52,9 @@
                             {% if app.user %}
                                 <li><a href="{{ path('index') }}">View Cart</a></li>
                                 <li><a href="{{ path('index') }}">Get money</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="{{ path('index') }}">Empty cart</a></li>
+                            {% else %}}
+                                <li><a href="{{ path('security_login') }}">Login to trade</a></li>
                             {% endif %}
-                            <li><a href="{{ path('security_login') }}">Login to trade</a></li>
                         </ul>
                     </li>
                     <li>

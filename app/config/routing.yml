@@ -6,5 +6,5 @@ user_registration:
     path: /register
     defaults: { _controller: WebStoreBundle:Register:register }
 
-logout:
+user_logout:
     path: /logout
