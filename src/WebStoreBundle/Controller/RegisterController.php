@@ -29,7 +29,7 @@ class RegisterController extends Controller
 
         $message = 'none';
         if ($form->isSubmitted() && $form->isValid()) {
-            $message = 'sucess';
+            $message = 'success';
 
             $password = $this
                 ->get('security.password_encoder')

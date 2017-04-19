@@ -36,6 +36,13 @@ class Item
     private $description;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="price", type="decimal")
+     */
+    private $price;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="dateAdded", type="datetime")

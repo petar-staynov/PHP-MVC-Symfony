@@ -68,7 +68,7 @@ class User implements UserInterface
     /**
      * @var int
      *
-     * @ORM\Column(name="money", type="integer", nullable=true)
+     * @ORM\Column(name="money", type="decimal", nullable=true)
      */
     private $money;
 
@@ -213,7 +213,7 @@ class User implements UserInterface
      *
      * @return User
      */
-    public function setMoney(float $amount)
+    public function setMoney($amount)
     {
         $this->money += $amount;
 

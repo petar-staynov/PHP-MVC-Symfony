@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% if message == 'success' %}
+        <div class="alert-success">
+            <p>Profile updated successfully!</p>
+        </div>
+    {% endif %}
+    {{ form_start(profile_form) }}
+    {{ form_row(profile_form.fullName)}}
+    {{ form_row(profile_form.email) }}
+    {{ form_row(profile_form.password.first)}}
+    {{ form_row(profile_form.password.second)}}
+    <button type="submit">Update profile</button>
+    {{ form_end(profile_form) }}
+{% endblock %}
