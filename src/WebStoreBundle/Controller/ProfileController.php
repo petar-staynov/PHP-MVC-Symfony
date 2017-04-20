@@ -34,13 +34,12 @@ class ProfileController extends Controller
             $formData = $form->getData();
 
             $newName = $formData->getFullName();
-            if($newName != '') {
+            if ($newName != '') {
                 $userEntity->setFullName($newName);
             }
 
             $newPass = $formData->getPassword();
-            if($newPass != '')
-            {
+            if ($newPass != '') {
                 $encodedPass = $this
                     ->get('security.password_encoder')
                     ->encodePassword($userEntity, $newPass);
@@ -50,8 +49,7 @@ class ProfileController extends Controller
             }
 
             $newEmail = $formData->getEmail();
-            if($newEmail != '')
-            {
+            if ($newEmail != '') {
                 $userEntity->setEmail($newEmail);
             }
             $usersRepo->flush();
@@ -65,5 +63,36 @@ class ProfileController extends Controller
                 'profile_form' => $form->createView(),
                 'message' => $message
             ));
+    }
+
+    /**
+     * @Route("/money", name="get_money")
+     */
+    public function getMoneyAction(Request $request)
+    {
+        $usersRepo = $this->getDoctrine()->getManager();
+        $currentUser = $this->getUser();
+
+        if (!$currentUser) {
+            $this->redirectToRoute('index', array('message' => 'Please login.'));
+        }
+
+        $currentUserId = $currentUser->getId();
+
+        $userEntity = $usersRepo->getRepository('WebStoreBundle:User')->find($currentUserId);
+
+        $newMoney = 100;
+
+        $userEntity->addMoney($newMoney);
+
+        $usersRepo->flush();
+
+        return $this->redirectToRoute('index');
+
+//        return $this->render('default/my_profile.html.twig',
+//            array(
+//                'profile_form' => $form->createView(),
+//                'message' => $message
+//            ));
     }
 }

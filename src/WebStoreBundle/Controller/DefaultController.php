@@ -13,7 +13,14 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        // replace this example code with whatever you need
+        $usersRepo = $this->getDoctrine()->getManager();
+        $currentUser = $this->getUser();
+
+        if($currentUser){
+            $money = $currentUser->getMoney();
+            return $this->render('default/index.html.twig', array('money' => $money));
+        }
+
         return $this->render('default/index.html.twig');
     }
 }

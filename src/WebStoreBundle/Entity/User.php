@@ -215,7 +215,7 @@ class User implements UserInterface
      */
     public function setMoney($amount)
     {
-        $this->money += $amount;
+        $this->money = $amount;
 
         return $this;
     }
@@ -228,6 +228,20 @@ class User implements UserInterface
     public function getMoney()
     {
         return $this->money;
+    }
+
+    /**
+     * Add money
+     *
+     * @param float $money
+     *
+     * @return User
+     */
+    public function addMoney($amount)
+    {
+        $this->money += $amount;
+
+        return $this;
     }
 
     public function getSalt()
