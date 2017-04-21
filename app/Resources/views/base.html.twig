@@ -27,7 +27,7 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a href="#">New</a></li>
+                    <li><a href="{{ path('add_item') }}">New</a></li>
                     <li><a href="#">Catalog</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
@@ -36,7 +36,7 @@
                            aria-expanded="false">Account <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             {% if app.user %}
-                                <li class="list-group-item list-group-item-success">Money: {{ money }}</li>
+                                <li class="list-group-item list-group-item-success">Money: </li>
                                 <li role="separator" class="divider"></li>
                                 <li><a href="{{ path('my_profile') }}">My Profile</a></li>
                                 <li role="separator" class="divider"></li>

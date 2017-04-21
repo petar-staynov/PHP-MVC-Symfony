@@ -5,6 +5,7 @@ namespace WebStoreBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use WebStoreBundle\Form\ProfileType;
 
 class ProfileController extends Controller
@@ -84,6 +85,10 @@ class ProfileController extends Controller
         $newMoney = 100;
 
         $userEntity->addMoney($newMoney);
+
+        $session = new Session();
+        $session->start();
+        $session->set('money', $userEntity->getMoney());
 
         $usersRepo->flush();
 
