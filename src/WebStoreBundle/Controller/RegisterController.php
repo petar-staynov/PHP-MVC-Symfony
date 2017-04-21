@@ -24,9 +24,6 @@ class RegisterController extends Controller
 
         $form->handleRequest($request);
 
-        var_dump($form->isSubmitted());
-        var_dump($form->isValid());
-
         $message = 'none';
         if ($form->isSubmitted() && $form->isValid()) {
             $message = 'success';
@@ -40,7 +37,6 @@ class RegisterController extends Controller
             $userRole = $roleRepo->findOneBy(['name' => 'ROLE_USER']);
             $user->addRole($userRole);
 
-            var_dump($user);
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();

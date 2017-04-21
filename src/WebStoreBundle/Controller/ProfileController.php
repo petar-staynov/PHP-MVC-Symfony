@@ -26,9 +26,11 @@ class ProfileController extends Controller
         $currentUserId = $currentUser->getId();
 
         $userEntity = $usersRepo->getRepository('WebStoreBundle:User')->find($currentUserId);
+        $currentPass = $userEntity->getPassword();
 
         $form = $this->createForm(ProfileType::class, $userEntity);
         $form->handleRequest($request);
+
 
         $message = 'none';
         if ($form->isSubmitted() && $form->isValid()) {
@@ -44,20 +46,24 @@ class ProfileController extends Controller
                 $encodedPass = $this
                     ->get('security.password_encoder')
                     ->encodePassword($userEntity, $newPass);
-                $userEntity->setPassword($encodedPass);
 
                 $userEntity->setPassword($encodedPass);
+            } else {
+                $userEntity->setPassword($currentPass);
             }
 
             $newEmail = $formData->getEmail();
             if ($newEmail != '') {
                 $userEntity->setEmail($newEmail);
             }
+
+            $usersRepo->persist($userEntity);
             $usersRepo->flush();
+            $usersRepo->refresh($userEntity);
 
             $message = 'success';
 
-//            return $this->redirectToRoute('my_profile');
+            return $this->redirectToRoute('index');
         }
         return $this->render('default/my_profile.html.twig',
             array(
