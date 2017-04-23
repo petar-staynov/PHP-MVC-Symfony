@@ -41,12 +41,11 @@ class ProfileController extends Controller
                 $userEntity->setFullName($newName);
             }
 
-            $newPass = $formData->getPassword();
+            $newPass = $formData->getPlainPassword();
             if ($newPass != '') {
                 $encodedPass = $this
                     ->get('security.password_encoder')
                     ->encodePassword($userEntity, $newPass);
-
                 $userEntity->setPassword($encodedPass);
             } else {
                 $userEntity->setPassword($currentPass);
@@ -63,7 +62,7 @@ class ProfileController extends Controller
 
             $message = 'success';
 
-            return $this->redirectToRoute('index');
+//            return $this->redirectToRoute('index');
         }
         return $this->render('default/my_profile.html.twig',
             array(

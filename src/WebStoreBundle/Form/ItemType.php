@@ -2,6 +2,7 @@
 
 namespace WebStoreBundle\Form;
 
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -19,12 +20,16 @@ class ItemType extends AbstractType
             ->add('price', MoneyType::class, array(
                 'currency' => 'BGN',
             ))
-            ->add('description', TextareaType::class);
+            ->add('description', TextareaType::class)
+            ->add('category', EntityType::class, array(
+                'class' => 'WebStoreBundle\Entity\Category',
+                'placeholder' => 'Choose a category'
+            ));
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults( array(
+        $resolver->setDefaults(array(
             'data_class' => Item::class,
         ));
     }

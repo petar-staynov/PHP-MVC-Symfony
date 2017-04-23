@@ -5,6 +5,7 @@ namespace WebStoreBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use WebStoreBundle\Entity\Item;
 
 class DefaultController extends Controller
 {
@@ -13,14 +14,23 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $currentUser = $this->getUser();
+        //All items
+        $items = $this->getDoctrine()->getRepository(Item::class)->findAll();
 
-        if($currentUser){
-            $money = $currentUser->getMoney();
-            return $this->render('default/index.html.twig', array('money' => $money));
+        //My items display if logged in
+        $myItems = [];
+        if ($this->getUser())
+        {
+            $myId = $this->getUser()->getId();
+            $myItems = $this->getDoctrine()->getRepository(Item::class)->findBy(
+                array('ownerId' => $myId)
+            );
         }
 
 
-        return $this->render('default/index.html.twig');
+        return $this->render('default/index.html.twig', array(
+            'items' => $items,
+            'myItems' => $myItems
+        ));
     }
 }

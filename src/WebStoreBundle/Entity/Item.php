@@ -73,6 +73,13 @@ class Item
      */
     private $owner;
 
+    /**
+     * @var Category
+     * @ORM\ManyToOne(targetEntity="WebStoreBundle\Entity\Category")
+     * @Assert\NotBlank()
+     */
+    private $category;
+
 
     public function __construct()
     {
@@ -205,7 +212,15 @@ class Item
     /**
      * @return string
      */
-    public function getOwner()
+    public function getOwnerUsername()
+    {
+        return $this->owner->getUsername();
+    }
+
+    /**
+     * @return string
+     */
+    public function getOwnerName()
     {
         return $this->owner->getFullName();
     }
@@ -218,6 +233,25 @@ class Item
     public function getDateAdded()
     {
         return $this->dateAdded;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param Category $category
+     *
+     * @return Item
+     */
+    public function setCategory($category)
+    {
+        $this->category = $category;
+        return $this;
     }
 }
 

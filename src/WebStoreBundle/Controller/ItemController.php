@@ -32,11 +32,27 @@ class ItemController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($item);
             $em->flush();
+
+            return $this->redirectToRoute('index');
         }
 
         return $this->render('default/add_item.html.twig',
             array(
                 'item_form' => $form->createView(),
             ));
+    }
+
+    public function viewItem()
+    {
+
+    }
+
+    public function editItem()
+    {
+
+    }
+    public function deleteItem()
+    {
+
     }
 }

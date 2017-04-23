@@ -1,7 +1,56 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    //About block
-    //Newest items block
-    //Useful links block
+    <div class="container">
+        <h1 class="text-center">All items:</h1>
+        <div class="row">
+            {% if items|length > 0 %}
+                {% for item in items %}
+                <div class="col-sm-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading text-center">{{ item.name }}</div>
+                        <div class="panel-default text-center">{{ item.ownerUsername }} ({{ item.getOwnerName() }})
+                        </div>
+                        <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
+                                                     style="width:100%" alt="Image"></div>
+                        <div class="panel-default text-center">{{ item.price }} BGN</div>
+                        <div class="panel-footer"><a class="btn btn-primary center-block" href="#">View</a></div>
+                    </div>
+                </div>
+            {% endfor %}
+            {% else %}
+                <div class="text-center">
+                    <h1>There are no items on the server</h1>
+                </div>
+            {% endif %}
+        </div>
+        {% if app.user %}
+            <h1 class="text-center">My items:</h1>
+                <div class="row">
+            {% if myItems|length > 0 %}
+                {% for item in myItems %}
+                        <div class="col-sm-4">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading text-center">{{ item.name }}</div>
+                                <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE"
+                                                             class="img-responsive"
+                                                             style="width:100%" alt="Image"></div>
+                                <div class="panel-default text-center">{{ item.price }} BGN</div>
+                                <div class="panel-footer">
+                                    <a class="btn btn-primary" href="#">View</a>
+                                    <a class="btn btn-warning" href="#">Edit</a>
+                                    <a class="btn btn-danger" href="#">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center">
+
+                    <h1 class="text-center">You have no items</h1>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
 {% endblock %}
