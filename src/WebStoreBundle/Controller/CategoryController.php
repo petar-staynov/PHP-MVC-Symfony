@@ -40,7 +40,7 @@ class CategoryController extends Controller
                 ->getRepository(Item::class)
                 ->findBy(['category' => $id]);
 
-        return $this->render('categories/categoryView.html.twig', array(
+        return $this->render('categories/category_view.html.twig', array(
             'category' => $category,
             'categoryItems'=> $categoryItems,
         ));

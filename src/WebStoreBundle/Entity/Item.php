@@ -27,6 +27,7 @@ class Item
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $name;
 
@@ -42,6 +43,7 @@ class Item
      *
      * @ORM\Column(name="price", type="decimal", precision=10, scale=2)
      * @Assert\NotBlank()
+     * @Assert\Range(min=0))
      */
     private $price;
 

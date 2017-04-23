@@ -38,7 +38,7 @@ class ItemController extends Controller
             return $this->redirectToRoute('index');
         }
 
-        return $this->render('items/add_item.html.twig',
+        return $this->render('items/item_add.twig',
             array(
                 'item_form' => $form->createView(),
             ));
@@ -58,7 +58,7 @@ class ItemController extends Controller
 
         $dateObj = $item->getDateAdded();
 
-        return $this->render('items/itemView.html.twig', array(
+        return $this->render('items/item_view.twig', array(
             'item' => $item,
             'addedDate' => $dateObj->format('d-m-y'),
         ));
@@ -100,7 +100,7 @@ class ItemController extends Controller
             ));
         }
 
-        return $this->render('items/itemEdit.html.twig', array(
+        return $this->render('items/item_edit.html.twig', array(
             'item' => $item, 'item_edit_form' => $form->createView()
         ));
     }
@@ -138,7 +138,7 @@ class ItemController extends Controller
 
             return $this->redirectToRoute('index');
         }
-        return $this->render('items/delete_item.html.twig',
+        return $this->render('items/item_delete.twig',
             array('article' => $item,
                 'item_delete_form' => $form->createView()));
     }
