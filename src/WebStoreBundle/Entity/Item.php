@@ -75,7 +75,7 @@ class Item
 
     /**
      * @var Category
-     * @ORM\ManyToOne(targetEntity="WebStoreBundle\Entity\Category")
+     * @ORM\ManyToOne(targetEntity="WebStoreBundle\Entity\Category", inversedBy="items")
      * @Assert\NotBlank()
      */
     private $category;

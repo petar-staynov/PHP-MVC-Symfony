@@ -8,11 +8,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use WebStoreBundle\Entity\Item;
 use WebStoreBundle\Form\ItemType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class ItemController extends Controller
 {
     /**
      * @Route("/add_item", name="add_item")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      * @param Request $request
      * @return Response
      */
