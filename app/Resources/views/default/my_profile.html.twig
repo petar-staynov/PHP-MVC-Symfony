@@ -6,11 +6,11 @@
             <p>Profile updated successfully!</p>
         </div>
     {% endif %}
+    <div class="container center-block">
+
     {{ form_start(profile_form, {'attr': {'novalidate': 'novalidate'}}) }}
-    {{ form_row(profile_form.fullName)}}
-    {{ form_row(profile_form.email) }}
-    {{ form_row(profile_form.password.first) }}
-    {{ form_row(profile_form.password.second) }}
+    {{ form_widget(profile_form) }}
     <button type="submit">Update profile</button>
     {{ form_end(profile_form) }}
+    <div>
 {% endblock %}

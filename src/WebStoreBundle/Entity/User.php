@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraint;
 
 /**
  * User
@@ -28,6 +29,8 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Length(min=5, max=255)
      */
     private $email;
 
@@ -35,12 +38,15 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="username", type="string", length=255, unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Length(min=4, max=255)
      */
     private $username;
 
     /**
      * @var string;
-     * @Assert\Length(max=4096)
+     * @Assert\NotBlank()
+     * @Assert\Length(min=4, max=255)
      */
     private $plainPassword;
 
@@ -58,24 +64,23 @@ class User implements UserInterface
      */
     private $fullName;
 
-//    /**
-//     * @var ArrayCollection
-//     *
-//     * @ORM\OneToMany(targetEntity="WebStoreBundle\Entity\Item", mappedBy="owner")
-//     */
-//    private $items;
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="WebStoreBundle\Entity\Item", mappedBy="owner")
+     */
+    private $items;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="money", type="decimal", nullable=true)
+     * @ORM\Column(name="money", type="decimal", nullable=true, precision=10, scale=2)
      */
     private $money;
 
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="WebStoreBundle\Entity\Role")
+     * @ORM\ManyToMany(targetEntity="WebStoreBundle\Entity\Role", inversedBy="users")
      * @ORM\JoinTable(name="users_roles", joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
      *     )

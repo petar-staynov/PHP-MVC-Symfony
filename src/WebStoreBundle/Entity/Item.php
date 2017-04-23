@@ -3,6 +3,8 @@
 namespace WebStoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Item
@@ -30,15 +32,16 @@ class Item
 
     /**
      * @var string
-     *
      * @ORM\Column(name="description", type="text")
+     * @Assert\NotBlank()
      */
     private $description;
 
     /**
-     * @var string
+     * @var int
      *
-     * @ORM\Column(name="price", type="decimal")
+     * @ORM\Column(name="price", type="decimal", precision=10, scale=2)
+     * @Assert\NotBlank()
      */
     private $price;
 
@@ -49,6 +52,33 @@ class Item
      */
     private $dateAdded;
 
+    /**
+     * @var bool
+     * @ORM\Column(name="promotion", type="boolean")
+     */
+    private $onPromotion;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="ownerId", type="integer")
+     */
+    private $ownerId;
+
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="WebStoreBundle\Entity\User", inversedBy="items")
+     * @ORM\JoinColumn(name="ownerId", referencedColumnName="id")
+     */
+    private $owner;
+
+
+    public function __construct()
+    {
+        $this->dateAdded = new \DateTime('now');
+        $this->onPromotion = false;
+    }
 
     /**
      * Get id
@@ -82,6 +112,27 @@ class Item
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set price
+     *
+     * @return Item
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
+        return $this;
+    }
+
+    /**
+     * Get price
+     *
+     * @return float
+     */
+    public function getPrice()
+    {
+        return $this->price;
     }
 
     /**
@@ -120,6 +171,43 @@ class Item
         $this->dateAdded = $dateAdded;
 
         return $this;
+    }
+
+    /**
+     * @param integer $ownerId
+     * @return Item
+     */
+    public function setOwnerId($ownerId)
+    {
+        $this->ownerId = $ownerId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOwnerId()
+    {
+        return $this->ownerId;
+    }
+
+    /**
+     * @param User $owner
+     *
+     * @return Item
+     */
+    public function setOwner(User $owner)
+    {
+        $this->owner = $owner;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOwner()
+    {
+        return $this->owner->getFullName();
     }
 
     /**

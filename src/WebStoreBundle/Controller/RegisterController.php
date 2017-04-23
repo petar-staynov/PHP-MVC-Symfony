@@ -30,7 +30,7 @@ class RegisterController extends Controller
 
             $password = $this
                 ->get('security.password_encoder')
-                ->encodePassword($user, $user->getPassword());
+                ->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
 
             $roleRepo = $this->getDoctrine()->getRepository(Role::class);

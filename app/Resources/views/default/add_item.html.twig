@@ -2,5 +2,13 @@
 
 {% block body %}
 
+    <div class="container center-block">
+        <div class="form-group">
+            {{ form_start(item_form) }}
+            {{ form_widget(item_form) }}
+            <button class="btn btn-primary" type="submit">Add item</button>
+            {{ form_end(item_form) }};
+        </div>
+    </div>
 {% endblock %}
 

@@ -5,17 +5,38 @@ namespace WebStoreBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use WebStoreBundle\Entity\Item;
+use WebStoreBundle\Form\ItemType;
 
-class ItemController extends DefaultController
+class ItemController extends Controller
 {
     /**
      * @Route("/add_item", name="add_item")
      * @param Request $request
      * @return Response
      */
-    public function indexAction(Request $request)
+    public function addItem(Request $request)
     {
-        return $this->render('default/add_item.html.twig');
+        $item = new Item();
+        $form = $this->createForm(ItemType::class, $item);
+
+        $form->handleRequest($request);
+
+        if($form->isValid() && $form->isSubmitted()){
+            $data = $form->getData();
+
+            $currentUser = $this->getUser();
+            $item->setOwner($currentUser);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($item);
+            $em->flush();
+        }
+
+        return $this->render('default/add_item.html.twig',
+            array(
+                'item_form' => $form->createView(),
+            ));
     }
 }
