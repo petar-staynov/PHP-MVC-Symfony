@@ -37,9 +37,9 @@
                                                              style="width:100%" alt="Image"></div>
                                 <div class="panel-default text-center">{{ item.price }} BGN</div>
                                 <div class="panel-footer">
-                                    <a class="btn btn-primary" href="#">View</a>
-                                    <a class="btn btn-warning" href="#">Edit</a>
-                                    <a class="btn btn-danger" href="#">Delete</a>
+                                    <a class="btn btn-primary" href="{{ path('item_view', {'id': item.id}) }}">View</a>
+                                    <a class="btn btn-warning" href="{{ path('item_edit', {'id': item.id}) }}">Edit</a>
+                                    <a class="btn btn-danger" href="{{ path('item_delete', {'id': item.id}) }}">Delete</a>
                                 </div>
                             </div>
                         </div>
