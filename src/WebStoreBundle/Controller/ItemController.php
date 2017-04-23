@@ -64,12 +64,82 @@ class ItemController extends Controller
         ));
     }
 
-    public function editItem()
+    /**
+     * @Route("/item/edit/{id}", name="item_edit")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     *
+     * @param $id
+     * @param Request $request
+     * @return Response
+     */
+    public function editItem($id, Request $request)
     {
+        $item = $this->getDoctrine()->getRepository(Item::class)->find($id);
 
+        if($item === null)
+        {
+            return $this->redirectToRoute('index');
+        }
+        $currentUser = $this->getUser();
+        if(!$currentUser->isOwner($item) && !$currentUser->isAdmin())
+        {
+            return $this->redirectToRoute("index");
+        }
+
+
+        $form = $this->createForm(ItemType::class, $item);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($item);
+            $em->flush();
+
+            return $this->redirectToRoute('item_view', array(
+                'id' => $item->getId()
+            ));
+        }
+
+        return $this->render('items/itemEdit.html.twig', array(
+            'item' => $item, 'item_edit_form' => $form->createView()
+        ));
     }
-    public function deleteItem()
-    {
 
+    /**
+     * @Route("/item/delete/{id}", name="item_delete")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     *
+     * @param $id
+     * @param Request $request
+     * @return Response
+     */
+    public function deleteItem($id, Request $request)
+    {
+        $item = $this->getDoctrine()->getRepository(Item::class)->find($id);
+
+        if($item === null)
+        {
+            return $this->redirectToRoute('index');
+        }
+        $currentUser = $this->getUser();
+        if(!$currentUser->isOwner($item) && !$currentUser->isAdmin())
+        {
+            return $this->redirectToRoute("index");
+        }
+
+        $form = $this->createForm(ItemType::class, $item);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($item);
+            $em->flush();
+
+            return $this->redirectToRoute('index');
+        }
+        return $this->render('items/delete_item.html.twig',
+            array('article' => $item,
+                'item_delete_form' => $form->createView()));
     }
 }

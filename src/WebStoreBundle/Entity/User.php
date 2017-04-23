@@ -293,7 +293,26 @@ class User implements UserInterface
     {
         $this->roles[] = $role;
         return $this;
+
     }
+
+    /**
+     * @param Item $item
+     * @return bool
+     */
+    public function isOwner(Item $item)
+    {
+        return $item->getOwnerId() == $this->getId();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return in_array("ROLE_ADMIN", $this->getRoles());
+    }
+
     /**
      * Removes sensitive data from the user.
      *
