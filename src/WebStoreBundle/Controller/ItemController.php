@@ -38,15 +38,30 @@ class ItemController extends Controller
             return $this->redirectToRoute('index');
         }
 
-        return $this->render('default/add_item.html.twig',
+        return $this->render('items/add_item.html.twig',
             array(
                 'item_form' => $form->createView(),
             ));
     }
 
-    public function viewItem()
+    /**
+     * @Route("/item/{id}", name="item_view")
+     * @param $id
+     * @return Response
+     */
+    public function viewItem($id)
     {
+        $item = $this
+            ->getDoctrine()
+            ->getRepository(Item::class)
+            ->find($id);
 
+        $dateObj = $item->getDateAdded();
+
+        return $this->render('items/itemView.html.twig', array(
+            'item' => $item,
+            'addedDate' => $dateObj->format('d-m-y'),
+        ));
     }
 
     public function editItem()

@@ -14,7 +14,7 @@
                         <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive"
                                                      style="width:100%" alt="Image"></div>
                         <div class="panel-default text-center">{{ item.price }} BGN</div>
-                        <div class="panel-footer"><a class="btn btn-primary center-block" href="#">View</a></div>
+                        <div class="panel-footer"><a class="btn btn-primary center-block" href="{{ path('item_view', {'id': item.id}) }}">View</a></div>
                     </div>
                 </div>
             {% endfor %}
