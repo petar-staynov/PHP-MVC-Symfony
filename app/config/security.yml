@@ -13,10 +13,10 @@ security:
                 providers: [in_memory, database_users]
         in_memory:
             memory:
-                users:
-                    admin:
-                        password: $2y$13$3G2EtsYoYllVYs5vVLwjU.hy3odSEtXMNIRjH3gn2eIv3L1DxBJHy
-                        roles: 'ROLE_ADMIN'
+#                users:
+#                    admin:
+#                        password: $2y$13$3G2EtsYoYllVYs5vVLwjU.hy3odSEtXMNIRjH3gn2eIv3L1DxBJHy
+#                        roles: 'ROLE_ADMIN'
         database_users:
             entity: { class: WebStoreBundle:User, property: username }
 
@@ -50,9 +50,9 @@ security:
                 # The name of the route to redirect to after logging out
                 target: index
 
-
     access_control:
         # this is a catch-all for the admin area
         # additional security lives in the controllers
 #        - { path: '^/(%locale%)/admin', roles: ROLE_ADMIN }
+#       - { path: ^/admin, roles: ROLE_ADMIN }
 

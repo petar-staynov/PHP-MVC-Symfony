@@ -1,0 +1,16 @@
+{% extends 'administration/administration_base.twig' %}
+
+{% block body %}
+    <div id="wrapper" class="toggled">
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1>Administration panel</h1>
+                        <h3>Hello <b>{{ app.user.getUsername() }}</b>, you are an <b>{{ role }}</b></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

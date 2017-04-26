@@ -1,0 +1,34 @@
+{% extends 'administration/administration_base.twig' %}
+
+{% block body %}
+    <div id="wrapper" class="toggled">
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <h1>Edit categories</h1>
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td style="font-size: x-large"> {{ item.name }} </td>
+                                <td>
+                                    <a class="btn btn-info" href="">View</a>
+                                    <a class="btn btn-warning" href="">Edit</a>
+                                    <a class="btn btn-danger" href="">Delete</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

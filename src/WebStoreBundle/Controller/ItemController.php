@@ -25,7 +25,7 @@ class ItemController extends Controller
 
         $form->handleRequest($request);
 
-        if($form->isValid() && $form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $data = $form->getData();
 
             $currentUser = $this->getUser();

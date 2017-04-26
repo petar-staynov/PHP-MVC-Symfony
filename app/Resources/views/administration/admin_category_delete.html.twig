@@ -1,0 +1,20 @@
+{% extends 'administration/administration_base.twig' %}
+
+{% block body %}
+<div id="wrapper" class="toggled">
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Delete Category:</h1>
+                    <p><b>WARNING!!! THIS WILL ALSO DELETE ALL ITEMS IN THIS CATEGORY</b></p>
+                    {{ form_start(category_edit_form)}}
+                    {{ form_widget(category_edit_form) }}
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                    {{ form_end(category_edit_form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
