@@ -66,7 +66,8 @@ class User implements UserInterface
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="WebStoreBundle\Entity\Item", mappedBy="owner")
+     *
+     * @ORM\ManyToMany(targetEntity="WebStoreBundle\Entity\Item")
      */
     private $items;
 
@@ -81,8 +82,10 @@ class User implements UserInterface
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="WebStoreBundle\Entity\Role", inversedBy="users")
-     * @ORM\JoinTable(name="users_roles", joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
+     * @ORM\JoinTable(
+     *     name="users_roles",
+     *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id", onDelete="CASCADE")}
      *     )
      */
     private $roles;

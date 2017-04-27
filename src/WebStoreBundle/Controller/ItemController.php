@@ -22,7 +22,6 @@ class ItemController extends Controller
     {
         $item = new Item();
         $form = $this->createForm(ItemType::class, $item);
-
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
@@ -46,6 +45,7 @@ class ItemController extends Controller
 
     /**
      * @Route("/item/{id}", name="item_view")
+     * @Route("/admin/item/view/{id}", name="admin_item_view")
      * @param $id
      * @return Response
      */

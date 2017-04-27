@@ -3,6 +3,8 @@
 namespace WebStoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 /**
  * Cart
@@ -29,9 +31,9 @@ class Cart
     private $ownerId;
 
     /**
-     * @var array
+     * @var ArrayCollection
      *
-     * @ORM\Column(name="items", type="array", nullable=true)
+     * @ORM\ManyToMany(targetEntity="WebStoreBundle\Entity\Item")
      */
     private $items;
 
@@ -94,7 +96,7 @@ class Cart
     /**
      * Get items
      *
-     * @return array
+     * @return ArrayCollection
      */
     public function getItems()
     {

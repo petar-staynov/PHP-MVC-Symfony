@@ -2,6 +2,7 @@
 
 namespace WebStoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -32,9 +33,20 @@ class Category
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="WebStoreBundle\Entity\Item", mappedBy="category")
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="WebStoreBundle\Entity\Item")
+     * @ORM\JoinTable(
+     *     joinColumns={@ORM\JoinColumn(onDelete="CASCADE")},
+     *     inverseJoinColumns={@ORM\JoinColumn(onDelete="CASCADE")}
+     * )
      */
     private $items;
+
+    public function __construct()
+    {
+        $this->items = new ArrayCollection();
+    }
 
     /**
      * Get id

@@ -4,6 +4,7 @@ namespace WebStoreBundle\Form;
 
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -24,7 +25,8 @@ class ItemType extends AbstractType
             ->add('category', EntityType::class, array(
                 'class' => 'WebStoreBundle\Entity\Category',
                 'placeholder' => 'Choose a category'
-            ));
+            ))
+            ->add('image', FileType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

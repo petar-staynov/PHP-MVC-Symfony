@@ -27,11 +27,11 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/admin/categories", name="admin_edit_categories")
+     * @Route("/admin/categories", name="admin_categories_panel")
      * @param Request $request
      * @return Response
      */
-    public function editCategories(Request $request)
+    public function categoriesPanel(Request $request)
     {
         $renderTemplate = 'administration/admin_categories_panel.html.twig';
         $categories = $this->getDoctrine()->getRepository(Category::class)->findAll();
@@ -40,6 +40,29 @@ class AdminController extends Controller
         return self::securedRenderer($renderTemplate, $renderParameters);
     }
 
+    /**
+     * @Route("/admin/categories/add", name="admin_add_category")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     * @param Request $request
+     * @return Response
+     */
+    public function addCategory(Request $request)
+    {
+        $renderTemplate = 'administration/admin_category_add.html.twig';
+        $renderParameters = [];
+
+        $category = new Category();
+        $form = $this->createForm(CategoryType::class, $category);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($category);
+            $em->flush();
+            return $this->redirectToRoute('admin_categories_panel');
+        }
+        $renderParameters['category_add_form'] = $form->createView();
+        return $this->securedRenderer($renderTemplate, $renderParameters);
+    }
 
     /**
      * @Route("/admin/categories/view/{id}", name="admin_category_view")
@@ -89,7 +112,7 @@ class AdminController extends Controller
             $em->persist($category);
             $em->flush();
 
-            return $this->redirectToRoute('admin_edit_categories');
+            return $this->redirectToRoute('admin_categories_panel');
         }
         $renderParameters['category'] = $category;
         $renderParameters['category_edit_form'] = $form->createView();
@@ -103,7 +126,7 @@ class AdminController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function deleteItem($id, Request $request)
+    public function deleteCategory($id, Request $request)
     {
         $category = $this->getDoctrine()->getRepository(Category::class)->find($id);
         $renderTemplate = 'administration/admin_category_delete.html.twig';
@@ -121,10 +144,27 @@ class AdminController extends Controller
             $em->remove($category);
             $em->flush();
 
-            return $this->redirectToRoute('admin_edit_categories');
+            return $this->redirectToRoute('admin_categories_panel');
         }
         $renderParameters['category'] = $category;
         $renderParameters['category_edit_form'] = $form->createView();
+        return $this->securedRenderer($renderTemplate, $renderParameters);
+    }
+
+    /**
+     * @Route("/admin/items", name="admin_items_panel")
+     * @param Request $request
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     * @return Response
+     */
+    public function viewItems()
+    {
+        $renderTemplate = 'administration/admin_items_panel.html.twig';
+        $renderParameters = [];
+
+        $items = $this->getDoctrine()->getRepository(Item::class)->findAll();
+        $renderParameters['itmes'] = $items;
+
         return $this->securedRenderer($renderTemplate, $renderParameters);
     }
 
