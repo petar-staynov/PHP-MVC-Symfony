@@ -31,9 +31,11 @@ class ItemType extends AbstractType
             ))
             ->add('quantity', NumberType::class)
             ->add('discount', NumberType::class)
-            ->add('discountExpirationDate',DateType::class,['years' => range(2017, 2020)])
+            ->add('discountExpirationDate', DateType::class, ['years' => range(2017, 2020)])
             ->add('imageFile', VichFileType::class, array(
                 'required' => false,
+                'allow_delete' => true, // not mandatory, default is true
+                'download_link' => true, // not mandatory, default is true
             ));
     }
 

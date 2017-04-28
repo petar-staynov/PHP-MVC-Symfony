@@ -29,16 +29,17 @@ class ItemController extends Controller
             $item->setOwner($currentUser);
             $item->setDiscounted();
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($item);
-            $em->flush();
+//            $item->getImageFile();
+//            $em = $this->getDoctrine()->getManager();
+//            $em->persist($item);
+//            $em->flush();
 
 
-            return $this->redirectToRoute('admin_items_panel');
-//            return $this->render('items/item_add.html.twig',
-//                array(
-//                    'item_form' => $form->createView(),
-//                ));
+//            return $this->redirectToRoute('admin_items_panel');
+            return $this->render('items/item_add.html.twig',
+                array(
+                    'item_form' => $form->createView(),
+                ));
 
         }
 
@@ -82,7 +83,7 @@ class ItemController extends Controller
             ));
         }
 
-        return $this->render('items/item_delete.html.twig', array(
+        return $this->render('items/item_edit.html.twig', array(
             'item' => $item, 'item_edit_form' => $form->createView()
         ));
     }

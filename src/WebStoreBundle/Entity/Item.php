@@ -14,7 +14,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  *
  * @ORM\Table(name="items")
  * @ORM\Entity(repositoryClass="WebStoreBundle\Repository\ItemRepository")
- * @Vich\Uploadable
+ * @Vich\Uploadable()
  */
 class Item
 {
@@ -115,7 +115,7 @@ class Item
 
     /**
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
-     * @Vich\UploadableField(mapping="item_image", fileNameProperty="imageName")
+     * @Vich\UploadableField(mapping="product_image", fileNameProperty="imageName")
      * @var File
      */
     private $imageFile;
@@ -338,7 +338,13 @@ class Item
      */
     public function setDiscount($discountValue)
     {
+        if($this->discountExpirationDate <= new \DateTime('now'))
+        {
+            $this->discountValue = 0;
+            $this->setDiscounted();
+        }
         $this->discountValue = $discountValue;
+        $this->setDiscounted();
         return $this;
     }
 
@@ -349,10 +355,10 @@ class Item
      */
     public function getDiscount()
     {
-        if ($this->getDiscountExpirationDate() !== null && new \DateTime('now') > $this->getDiscountExpirationDate()) {
+        if ($this->getDiscountExpirationDate() !== null && new \DateTime('now') >= $this->getDiscountExpirationDate()) {
             $this->setDiscountExpirationDate(null);
             $this->setDiscount(0);
-            $this->discounted = 0;
+            $this->setDiscounted();
         }
         return $this->discountValue;
     }
@@ -385,7 +391,7 @@ class Item
     }
 
     /**
-     *
+     * @return boolean
      */
     public function setDiscounted()
     {
@@ -409,6 +415,7 @@ class Item
     public function setDiscountExpirationDate($date)
     {
         $this->discountExpirationDate = $date;
+        $this->setDiscounted();
     }
 
     /**
@@ -452,11 +459,11 @@ class Item
     {
         $this->imageFile = $image;
 
-//        if ($image) {
-//            // It is required that at least one field changes if you are using doctrine
-//            // otherwise the event listeners won't be called and the file is lost
-//            $this->updatedAt = new \DateTimeImmutable();
-//        }
+        if ($image) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
 
         return $this;
     }

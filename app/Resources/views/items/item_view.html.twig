@@ -14,7 +14,7 @@
             <div class="panel-default text-center">Price: {{ item.price }} BGN</div>
             <div class="panel-footer">
                 {% if app.user and app.user.isEditor() %}
-                    <a class="btn btn-warning" href="{{ path('admin_item_delete', {'id': item.id}) }}">Edit</a>
+                    <a class="btn btn-warning" href="{{ path('admin_item_edit', {'id': item.id}) }}">Edit</a>
                     <a class="btn btn-danger" href="{{ path('admin_item_delete', {'id': item.id}) }}">Delete</a>
                     {% elseif app.user %}
                         <a class="btn btn-success" href="#">Buy</a>
