@@ -27,7 +27,6 @@ class ItemController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $currentUser = $this->getUser();
             $item->setOwner($currentUser);
-            $item->setDiscounted();
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($item);

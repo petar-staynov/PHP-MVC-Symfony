@@ -138,9 +138,8 @@ class Item
     public function __construct()
     {
         $this->dateAdded = new \DateTime('now');
-        $this->updatedAt = new \DateTime('now');
         $this->comments = new ArrayCollection();
-        $this->setDiscounted();
+        $this->getDiscounted();
     }
 
     /**
@@ -338,13 +337,7 @@ class Item
      */
     public function setDiscount($discountValue)
     {
-        if($this->discountExpirationDate <= new \DateTime('now'))
-        {
-            $this->discountValue = 0;
-            $this->setDiscounted();
-        }
         $this->discountValue = $discountValue;
-        $this->setDiscounted();
         return $this;
     }
 
@@ -355,11 +348,6 @@ class Item
      */
     public function getDiscount()
     {
-        if ($this->getDiscountExpirationDate() !== null && new \DateTime('now') >= $this->getDiscountExpirationDate()) {
-            $this->setDiscountExpirationDate(null);
-            $this->setDiscount(0);
-            $this->setDiscounted();
-        }
         return $this->discountValue;
     }
 
@@ -383,22 +371,29 @@ class Item
     }
 
     /**
+     * Check if item is on discount
      * @return bool
      */
-    public function isDiscounted()
+    public function getDiscounted()
     {
-        return $this->setDiscounted();
+        if ($this->discountValue < 0 && $this->getDiscountExpirationDate() >= new \DateTime('now')){
+            return 0;
+        }
+        return $this->discounted;
     }
 
     /**
-     * @return boolean
+     * @param  boolean $switch
+     * @return Item
      */
-    public function setDiscounted()
+    public function setDiscounted(bool $switch)
     {
-        if($this->discountValue > 0){
-            return 1;
+        if ($this->discountValue < 0 && $this->getDiscountExpirationDate() >= new \DateTime('now')){
+            $this->discounted = 0;
+            return $this;
         }
-        return 0;
+        $this->discounted = $switch;
+        return $this;
     }
 
     /**
@@ -415,7 +410,6 @@ class Item
     public function setDiscountExpirationDate($date)
     {
         $this->discountExpirationDate = $date;
-        $this->setDiscounted();
     }
 
     /**
