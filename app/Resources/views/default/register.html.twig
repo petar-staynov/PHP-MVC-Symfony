@@ -1,16 +1,9 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    {% if message == 'success' %}
-        <div class="alert-success">
-            <p>Registration successful, please login.</p>
-        </div>
-    {% endif %}
-
     <div class="container center-block">
         {{ form_start(register_form) }}
         {{ form_widget(register_form) }}
         <button class="btn btn-primary" type="submit">Register</button>
         {{ form_end(register_form) }}
     </div>
-
 {% endblock %}

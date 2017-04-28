@@ -24,10 +24,7 @@ class RegisterController extends Controller
 
         $form->handleRequest($request);
 
-        $message = 'none';
         if ($form->isSubmitted() && $form->isValid()) {
-            $message = 'success';
-
             $password = $this
                 ->get('security.password_encoder')
                 ->encodePassword($user, $user->getPlainPassword());
@@ -44,7 +41,6 @@ class RegisterController extends Controller
         return $this->render('default/register.html.twig',
             array(
                 'register_form' => $form->createView(),
-                'message' => $message
             ));
     }
 }

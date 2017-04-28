@@ -317,6 +317,16 @@ class User implements UserInterface
             }
         return false;
     }
+    /**
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        if(in_array("ROLE_ADMIN", $this->getRoles())){
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Removes sensitive data from the user.

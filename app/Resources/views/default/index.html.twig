@@ -6,7 +6,7 @@
         <div class="row">
             {% if items|length > 0 %}
                 {% for item in items %}
-                <div class="col-sm-4">
+                <div class="col-lg-4">
                     <div class="panel panel-primary">
                         <div class="panel-heading text-center">{{ item.name }}</div>
                         <div class="panel-default text-center">{{ item.ownerUsername }} ({{ item.getOwnerName() }})
@@ -24,33 +24,33 @@
                 </div>
             {% endif %}
         </div>
-        {% if app.user %}
-            <h1 class="text-center">My items:</h1>
-                <div class="row">
-            {% if myItems|length > 0 %}
-                {% for item in myItems %}
-                        <div class="col-sm-4">
-                            <div class="panel panel-primary">
-                                <div class="panel-heading text-center">{{ item.name }}</div>
-                                <div class="panel-body"><img src="{{ asset(item.imagePath) }}"
-                                                             class="img-responsive"
-                                                             style="width:100%" alt="Image"></div>
-                                <div class="panel-default text-center">{{ item.price }} BGN</div>
-                                <div class="panel-footer">
-                                    <a class="btn btn-primary" href="{{ path('item_view', {'id': item.id}) }}">View</a>
-                                    <a class="btn btn-warning" href="{{ path('admin_item_edit', {'id': item.id}) }}">Edit</a>
-                                    <a class="btn btn-danger" href="{{ path('admin_item_delete', {'id': item.id}) }}">Delete</a>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="text-center">
+        {#{% if app.user %}#}
+            {#<h1 class="text-center">My items:</h1>#}
+                {#<div class="row">#}
+            {#{% if myItems|length > 0 %}#}
+                {#{% for item in myItems %}#}
+                        {#<div class="col-sm-4">#}
+                            {#<div class="panel panel-primary">#}
+                                {#<div class="panel-heading text-center">{{ item.name }}</div>#}
+                                {#<div class="panel-body"><img src="{{ asset(item.imagePath) }}"#}
+                                                             {#class="img-responsive"#}
+                                                             {#style="width:100%" alt="Image"></div>#}
+                                {#<div class="panel-default text-center">{{ item.price }} BGN</div>#}
+                                {#<div class="panel-footer">#}
+                                    {#<a class="btn btn-primary" href="{{ path('item_view', {'id': item.id}) }}">View</a>#}
+                                    {#<a class="btn btn-warning" href="{{ path('admin_item_edit', {'id': item.id}) }}">Edit</a>#}
+                                    {#<a class="btn btn-danger" href="{{ path('admin_item_delete', {'id': item.id}) }}">Delete</a>#}
+                                {#</div>#}
+                            {#</div>#}
+                        {#</div>#}
+                    {#{% endfor %}#}
+                {#</div>#}
+            {#{% else %}#}
+                {#<div class="text-center">#}
 
-                    <h1 class="text-center">You have no items</h1>
-                </div>
-            {% endif %}
-        {% endif %}
+                    {#<h1 class="text-center">You have no items</h1>#}
+                {#</div>#}
+            {#{% endif %}#}
+        {#{% endif %}#}
     </div>
 {% endblock %}

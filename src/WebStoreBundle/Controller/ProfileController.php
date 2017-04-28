@@ -20,7 +20,7 @@ class ProfileController extends Controller
         $currentUser = $this->getUser();
 
         if (!$currentUser) {
-            $this->redirectToRoute('index', array('message' => 'Please login.'));
+            $this->redirectToRoute('index');
         }
 
         $currentUserId = $currentUser->getId();
@@ -32,7 +32,6 @@ class ProfileController extends Controller
         $form->handleRequest($request);
 
 
-        $message = 'none';
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
 
@@ -60,14 +59,12 @@ class ProfileController extends Controller
             $usersRepo->flush();
             $usersRepo->refresh($userEntity);
 
-            $message = 'success';
 
 //            return $this->redirectToRoute('index');
         }
         return $this->render('default/my_profile.html.twig',
             array(
                 'profile_form' => $form->createView(),
-                'message' => $message
             ));
     }
 
@@ -80,7 +77,7 @@ class ProfileController extends Controller
         $currentUser = $this->getUser();
 
         if (!$currentUser) {
-            $this->redirectToRoute('index', array('message' => 'Please login.'));
+            $this->redirectToRoute('index');
         }
 
         $currentUserId = $currentUser->getId();

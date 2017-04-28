@@ -56,11 +56,8 @@ class PublicController extends Controller
             ->getRepository(Item::class)
             ->find($id);
 
-        $dateObj = $item->getDateAdded();
-
         return $this->render('items/item_view.html.twig', array(
             'item' => $item,
-            'addedDate' => $dateObj->format('d-m-y'),
         ));
     }
 

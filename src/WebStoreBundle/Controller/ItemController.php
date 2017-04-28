@@ -29,21 +29,20 @@ class ItemController extends Controller
             $item->setOwner($currentUser);
             $item->setDiscounted();
 
-//            $item->getImageFile();
-//            $em = $this->getDoctrine()->getManager();
-//            $em->persist($item);
-//            $em->flush();
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($item);
+            $em->flush();
 
 
-//            return $this->redirectToRoute('admin_items_panel');
-            return $this->render('items/item_add.html.twig',
-                array(
-                    'item_form' => $form->createView(),
-                ));
+            return $this->redirectToRoute('admin_items_panel');
+//            return $this->render('items/item_add.html.twig',
+//                array(
+//                    'item_form' => $form->createView(),
+//                ));
 
         }
 
-        return $this->render('items/item_add.html.twig',
+        return $this->render('administration/admin_item_add.html.twig',
             array(
                 'item_form' => $form->createView(),
             ));
@@ -83,8 +82,9 @@ class ItemController extends Controller
             ));
         }
 
-        return $this->render('items/item_edit.html.twig', array(
-            'item' => $item, 'item_edit_form' => $form->createView()
+        return $this->render('administration/admin_item_edit.html.twig', array(
+            'item' => $item,
+            'item_edit_form' => $form->createView()
         ));
     }
 
@@ -118,7 +118,7 @@ class ItemController extends Controller
 
             return $this->redirectToRoute('admin_items_panel');
         }
-        return $this->render('items/item_delete.html.twig',
+        return $this->render('administration/admin_item_delete.html.twig',
             array('article' => $item,
                 'item_delete_form' => $form->createView()));
     }

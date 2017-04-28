@@ -1,0 +1,19 @@
+{% extends '/administration/administration_base.html.twig' %}
+{% block body %}
+    <div id="wrapper" class="toggled">
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-10">
+                        <div class="container">
+                            {{ form_start(admin_register_form) }}
+                            {{ form_widget(admin_register_form) }}
+                            <button class="btn btn-primary" type="submit">Register</button>
+                            {{ form_end(admin_register_form) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

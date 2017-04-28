@@ -1,4 +1,4 @@
-{% extends 'administration/administration_base.twig' %}
+{% extends '/administration/administration_base.html.twig' %}
 
 {% block body %}
     <div id="wrapper" class="toggled">
@@ -25,14 +25,14 @@
                                     <td>{{ item.getDiscount() }}%</td>
                                     <td>{{ item.category }}</td>
                                     <td>
-                                        <a class="btn btn-primary" href="{{ path('item_view', {'id': item.id}) }}">View</a>
+                                        <a class="btn btn-primary" href="{{ path('admin_item_view', {'id': item.id}) }}">View</a>
                                         <a class="btn btn-warning" href="{{ path('admin_item_edit', {'id': item.id}) }}">Edit</a>
                                         <a class="btn btn-danger" href="{{ path('admin_item_delete', {'id': item.id}) }}">Delete</a>
                                     </td>
                                 </tr>
                             {% endfor %}
                             <tr>
-                                <td class="text-center" colspan="5" style="font-size: x-large">
+                                <td class="text-left" colspan="5" style="font-size: x-large">
                                     <a class="btn btn-success" href="{{ path('admin_item_add') }}">Add new items</a>
                                 </td>
                             </tr>

@@ -1,13 +1,6 @@
 {% extends 'base.html.twig' %}
-
 {% block body %}
-    {% if message == 'success' %}
-        <div class="alert-success">
-            <p>Profile updated successfully!</p>
-        </div>
-    {% endif %}
     <div class="container center-block">
-
     {{ form_start(profile_form, {'attr': {'novalidate': 'novalidate'}}) }}
     {{ form_widget(profile_form) }}
     <button type="submit">Update profile</button>

@@ -1,4 +1,4 @@
-{% extends 'administration/administration_base.twig' %}
+{% extends '/administration/administration_base.html.twig' %}
 
 {% block body %}
     <div id="wrapper" class="toggled">
@@ -26,9 +26,9 @@
                                         <td>{{ item.getOwnerUsername() }}</td>
                                         <td>{{ item.getDateAdded().format('d-m-y') }}</td>
                                         <td>
-                                            <a class="btn btn-info" href="">View</a>
-                                            <a class="btn btn-warning" href="">Edit</a>
-                                            <a class="btn btn-danger" href="">Delete</a>
+                                            <a class="btn btn-info" href="{{ path('admin_item_view', {'id': item.id}) }}">View</a>
+                                            <a class="btn btn-warning" href="{{ path('admin_item_edit', {'id': item.id}) }}">Edit</a>
+                                            <a class="btn btn-danger" href="{{ path('admin_item_delete', {'id': 'x'}) }}">Delete</a>
                                         </td>
                                     </tr>
                                 {% endfor %}

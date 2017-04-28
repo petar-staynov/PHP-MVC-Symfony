@@ -43,6 +43,29 @@ class AdminController extends Controller
     }
 
     /**
+     * @Route("/admin/item/view/{id}", name="admin_item_view")
+     * @param $id
+     * @return Response
+     */
+    public function viewItemAction($id)
+    {
+        $renderTemplate = 'administration/admin_item_view.html.twig';
+
+        $item = $this
+            ->getDoctrine()
+            ->getRepository(Item::class)
+            ->find($id);
+
+        $dateObj = $item->getDateAdded();
+
+
+        $renderParameters['item'] = $item;
+//        $renderParameters['addedDate'] = $item;
+
+        return $this->securedRenderer($renderTemplate, $renderParameters);
+    }
+
+    /**
      * @Route("/admin/categories_panel", name="admin_categories_panel")
      * @param Request $request
      * @return Response
@@ -54,6 +77,22 @@ class AdminController extends Controller
 
         $categories = $this->getDoctrine()->getRepository(Category::class)->findAll();
         $renderParameters['categories'] = $categories;
+
+        return $this->securedRenderer($renderTemplate, $renderParameters);
+    }
+
+    /**
+     * @Route("/admin/users_panel", name="admin_users_panel")
+     * @param Request $request
+     * @return Response
+     */
+    public function usersPanel(Request $request)
+    {
+        $renderTemplate = 'administration/admin_users_panel.html.twig';
+        $renderParameters = [];
+
+        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
+        $renderParameters['users'] = $users;
 
         return $this->securedRenderer($renderTemplate, $renderParameters);
     }

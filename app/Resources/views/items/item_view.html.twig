@@ -2,10 +2,10 @@
 
 {% block body %}
     <div class="container text-center">
-        <div class="panel panel-default">
+        <div class="panel panel-default" style="max-width: 60%">
             <div class="panel-heading">Name: {{ item.name }}</div>
             <div class="panel-heading">Added by: {{ item.ownerUsername }} ({{ item.getOwnerName() }})</div>
-            <div class="panel-heading">Added on {{ addedDate }}</div>
+            <div class="panel-heading">Added on {{ item.getDateAdded.format('d-m-y') }}</div>
             <div class="panel-body">
                 <img src="{{ asset(item.imagePath) }}" class="img-responsive" style="width:100%" alt="Image">
             </div>
@@ -16,8 +16,8 @@
                 {% if app.user and app.user.isEditor() %}
                     <a class="btn btn-warning" href="{{ path('admin_item_edit', {'id': item.id}) }}">Edit</a>
                     <a class="btn btn-danger" href="{{ path('admin_item_delete', {'id': item.id}) }}">Delete</a>
-                    {% elseif app.user %}
-                        <a class="btn btn-success" href="#">Buy</a>
+                {% elseif app.user %}
+                    <a class="btn btn-success" href="#">Buy</a>
                 {% endif %}
             </div>
         </div>
