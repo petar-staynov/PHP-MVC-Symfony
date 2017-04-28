@@ -23,147 +23,37 @@ class AdminController extends Controller
     public function indexAction(Request $request)
     {
         $renderTemplate = 'administration/admin_panel.html.twig';
-        return self::securedRenderer($renderTemplate, null);
+        return $this->securedRenderer($renderTemplate, null);
     }
 
     /**
-     * @Route("/admin/categories", name="admin_categories_panel")
+     * @Route("/admin/items_panel", name="admin_items_panel")
+     * @param Request $request
+     * @return Response
+     */
+    public function itemsPanel(Request $request)
+    {
+        $renderTemplate = 'administration/admin_items_panel.html.twig';
+        $renderParameters = [];
+
+        $items = $this->getDoctrine()->getRepository(Item::class)->findAll();
+        $renderParameters['items'] = $items;
+
+        return $this->securedRenderer($renderTemplate, $renderParameters);
+    }
+
+    /**
+     * @Route("/admin/categories_panel", name="admin_categories_panel")
      * @param Request $request
      * @return Response
      */
     public function categoriesPanel(Request $request)
     {
         $renderTemplate = 'administration/admin_categories_panel.html.twig';
+        $renderParameters = [];
+
         $categories = $this->getDoctrine()->getRepository(Category::class)->findAll();
-
         $renderParameters['categories'] = $categories;
-        return self::securedRenderer($renderTemplate, $renderParameters);
-    }
-
-    /**
-     * @Route("/admin/categories/add", name="admin_add_category")
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
-     * @param Request $request
-     * @return Response
-     */
-    public function addCategory(Request $request)
-    {
-        $renderTemplate = 'administration/admin_category_add.html.twig';
-        $renderParameters = [];
-
-        $category = new Category();
-        $form = $this->createForm(CategoryType::class, $category);
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($category);
-            $em->flush();
-            return $this->redirectToRoute('admin_categories_panel');
-        }
-        $renderParameters['category_add_form'] = $form->createView();
-        return $this->securedRenderer($renderTemplate, $renderParameters);
-    }
-
-    /**
-     * @Route("/admin/categories/view/{id}", name="admin_category_view")
-     * @param $id
-     * @return Response
-     */
-    public function viewCategory($id)
-    {
-        $renderTemplate = 'administration/admin_category_view.html.twig';
-        $renderParameters = [];
-        $category = $this
-            ->getDoctrine()
-            ->getRepository(Category::class)
-            ->find($id);
-        $renderParameters['category'] = $category;
-
-        $categoryItems =
-            $this
-                ->getDoctrine()
-                ->getRepository(Item::class)
-                ->findBy(['category' => $id]);
-        $renderParameters['items'] = $categoryItems;
-
-        return $this->securedRenderer($renderTemplate, $renderParameters);
-    }
-
-    /**
-     * @Route("/admin/categories/edit/{id}", name="admin_category_edit")*
-     * @param $id
-     * @param Request $request
-     * @return Response
-     */
-    public function editCategory($id, Request $request)
-    {
-        $renderTemplate = 'administration/admin_category_edit.html.twig';
-        $renderParameters = [];
-        $category = $this->getDoctrine()->getRepository(Category::class)->find($id);
-
-        if ($category === null) {
-            return $this->redirectToRoute('index');
-        }
-
-        $form = $this->createForm(CategoryType::class, $category);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($category);
-            $em->flush();
-
-            return $this->redirectToRoute('admin_categories_panel');
-        }
-        $renderParameters['category'] = $category;
-        $renderParameters['category_edit_form'] = $form->createView();
-
-        return $this->securedRenderer($renderTemplate, $renderParameters);
-    }
-
-    /**
-     * @Route("/admin/categories/delete/{id}", name="admin_category_delete")
-     * @param $id
-     * @param Request $request
-     * @return Response
-     */
-    public function deleteCategory($id, Request $request)
-    {
-        $category = $this->getDoctrine()->getRepository(Category::class)->find($id);
-        $renderTemplate = 'administration/admin_category_delete.html.twig';
-        $renderParameters = [];
-
-        if ($category === null) {
-            return $this->redirectToRoute('index');
-        }
-
-        $form = $this->createForm(CategoryType::class, $category);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($category);
-            $em->flush();
-
-            return $this->redirectToRoute('admin_categories_panel');
-        }
-        $renderParameters['category'] = $category;
-        $renderParameters['category_edit_form'] = $form->createView();
-        return $this->securedRenderer($renderTemplate, $renderParameters);
-    }
-
-    /**
-     * @Route("/admin/items", name="admin_items_panel")
-     * @param Request $request
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
-     * @return Response
-     */
-    public function viewItems()
-    {
-        $renderTemplate = 'administration/admin_items_panel.html.twig';
-        $renderParameters = [];
-
-        $items = $this->getDoctrine()->getRepository(Item::class)->findAll();
-        $renderParameters['itmes'] = $items;
 
         return $this->securedRenderer($renderTemplate, $renderParameters);
     }
@@ -171,7 +61,6 @@ class AdminController extends Controller
     /**
      * @param $renderTemplate
      * @param $renderParameters
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function securedRenderer($renderTemplate, $renderParameters)

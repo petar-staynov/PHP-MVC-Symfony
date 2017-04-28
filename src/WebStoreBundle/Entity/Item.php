@@ -6,13 +6,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * Item
  *
  * @ORM\Table(name="items")
  * @ORM\Entity(repositoryClass="WebStoreBundle\Repository\ItemRepository")
+ * @Vich\Uploadable
  */
 class Item
 {
@@ -36,7 +38,6 @@ class Item
     /**
      * @var string
      * @ORM\Column(name="description", type="text")
-     * @Assert\NotBlank()
      */
     private $description;
 
@@ -64,9 +65,9 @@ class Item
 
     /**
      * @var string
-     * @ORM\Column(name="discount", type="integer")
-     * @Assert\GreaterThan(value = 0, message="Discount should be more than 0%")
-     * @Assert\LessThan(value=99, message="Discount should be less than 99%")
+     * @ORM\Column(name="discount_value", type="integer")
+     * @Assert\GreaterThanOrEqual(value = 0, message="Discount should be equal or more than 0%")
+     * @Assert\LessThan(value=100, message="Discount should be less than 100%")
      */
     private $discountValue;
 
@@ -87,13 +88,12 @@ class Item
     /**
      * @var int
      *
-     * @ORM\Column(name="ownerId", type="integer")
+     * @ORM\Column(name="ownerId", type="integer", nullable=false)
      */
     private $ownerId;
 
     /**
      * @var User
-     *
      * @ORM\ManyToOne(targetEntity="WebStoreBundle\Entity\User", inversedBy="items")
      * @ORM\JoinColumn(name="ownerId", referencedColumnName="id")
      */
@@ -102,7 +102,6 @@ class Item
     /**
      * @var Category
      * @ORM\ManyToOne(targetEntity="WebStoreBundle\Entity\Category", inversedBy="items")
-     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      * @Assert\NotBlank()
      */
     private $category;
@@ -114,11 +113,34 @@ class Item
      */
     private $comments;
 
+    /**
+     * NOTE: This is not a mapped field of entity metadata, just a simple property.
+     * @Vich\UploadableField(mapping="item_image", fileNameProperty="imageName")
+     * @var File
+     */
+    private $imageFile;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     *
+     * @var string
+     */
+    private $imageName;
+
+    /**
+     * @ORM\Column(type="datetime")
+     *
+     * @var \DateTime
+     */
+    private $updatedAt;
+
+
     public function __construct()
     {
         $this->dateAdded = new \DateTime('now');
-        $this->discounted = 0;
+        $this->updatedAt = new \DateTime('now');
         $this->comments = new ArrayCollection();
+        $this->setDiscounted();
     }
 
     /**
@@ -173,7 +195,7 @@ class Item
      */
     public function getPrice()
     {
-        if ($this->discounted == 0) {
+        if ($this->discountValue == 0) {
             return $this->price;
         }
         return $this->price - ($this->price * ($this->getDiscount() / 100));
@@ -208,7 +230,7 @@ class Item
      */
     public function getDescriptionSummary($length = 100)
     {
-        if(strlen($this->getDescription()) <= $length){
+        if (strlen($this->getDescription()) <= $length) {
             return $this->getDescription();
         }
         return substr($this->getDescription(), 0, $length) . "...";
@@ -237,7 +259,6 @@ class Item
         $this->ownerId = $ownerId;
         return $this;
     }
-
     /**
      * @return int
      */
@@ -258,11 +279,19 @@ class Item
     }
 
     /**
+     * @return User
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+
+    /**
      * @return string
      */
     public function getOwnerUsername()
     {
-        return $this->owner->getUsername();
+        return $this->getOwner()->getUsername();
     }
 
     /**
@@ -270,7 +299,7 @@ class Item
      */
     public function getOwnerName()
     {
-        return $this->owner->getFullName();
+        return $this->getOwner()->getFullName();
     }
 
     /**
@@ -309,10 +338,6 @@ class Item
      */
     public function setDiscount($discountValue)
     {
-        if (!$this->discounted) {
-            $this->setDiscountExpirationDate(null);
-            $discountValue = 0;
-        }
         $this->discountValue = $discountValue;
         return $this;
     }
@@ -324,8 +349,7 @@ class Item
      */
     public function getDiscount()
     {
-        if ($this->getDiscountExpirationDate() !== null
-            && new \DateTime('now') > $this->getDiscountExpirationDate()) {
+        if ($this->getDiscountExpirationDate() !== null && new \DateTime('now') > $this->getDiscountExpirationDate()) {
             $this->setDiscountExpirationDate(null);
             $this->setDiscount(0);
             $this->discounted = 0;
@@ -357,14 +381,18 @@ class Item
      */
     public function isDiscounted()
     {
-        return $this->discounted;
+        return $this->setDiscounted();
     }
+
     /**
-     * @param bool $switch
+     *
      */
-    public function setDiscounted($switch)
+    public function setDiscounted()
     {
-        $this->discounted = $switch;
+        if($this->discountValue > 0){
+            return 1;
+        }
+        return 0;
     }
 
     /**
@@ -374,17 +402,15 @@ class Item
     {
         return $this->discountExpirationDate;
     }
+
     /**
      * @param \DateTime|null $date
      */
     public function setDiscountExpirationDate($date)
     {
-        if(!$this->isDiscounted())$date = null;
-        elseif($date === null && $this->discountExpirationDate !== null){
-            $this->setDiscount(0);
-        }
-        $this->dateDiscountExpires = $date;
+        $this->discountExpirationDate = $date;
     }
+
     /**
      * @return float
      */
@@ -409,6 +435,69 @@ class Item
     {
         $this->comments[] = $comment;
         return $this;
+    }
+
+    /**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the  update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $image
+     *
+     * @return Item
+     */
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+
+//        if ($image) {
+//            // It is required that at least one field changes if you are using doctrine
+//            // otherwise the event listeners won't be called and the file is lost
+//            $this->updatedAt = new \DateTimeImmutable();
+//        }
+
+        return $this;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param string $imageName
+     *
+     * @return Item
+     */
+    public function setImageName($imageName)
+    {
+        $this->imageName = $imageName;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getImageName()
+    {
+        return $this->imageName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImagePath()
+    {
+        if(!$this->imageName) {
+            return 'images/items/default.png';
+        }
+        return 'images/items/' . $this->imageName;
     }
 }
 

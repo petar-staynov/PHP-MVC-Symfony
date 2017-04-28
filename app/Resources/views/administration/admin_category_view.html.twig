@@ -34,7 +34,7 @@
                                 {% endfor %}
                                 <tr>
                                     <td class="text-center" colspan="5" style="font-size: x-large">
-                                        <a class="btn btn-success" href="">Add new item to this category</a>
+                                        <a class="btn btn-success" href="{{ path('admin_item_add') }}">Add new item to this category</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -42,7 +42,7 @@
                         {% else %}
                             <div class="text-center">
                                 <h1>There are no items in this category</h1>
-                                <a class="btn btn-success" href="">Add new item to this category</a>
+                                <a class="btn btn-success" href="{{ path('admin_item_add') }}">Add new item to this category</a>
                             </div>
                         {% endif %}
                     </div>

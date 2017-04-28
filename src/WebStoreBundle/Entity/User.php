@@ -66,8 +66,7 @@ class User implements UserInterface
 
     /**
      * @var ArrayCollection
-     *
-     * @ORM\ManyToMany(targetEntity="WebStoreBundle\Entity\Item")
+     * @ORM\OneToMany(targetEntity="WebStoreBundle\Entity\Item", mappedBy="owner")
      */
     private $items;
 
@@ -95,7 +94,7 @@ class User implements UserInterface
     {
         $this->roles = new ArrayCollection();
         $this->items = new ArrayCollection();
-        $this->money = 0;
+        $this->money = 1000;
     }
 
     /**
@@ -311,9 +310,12 @@ class User implements UserInterface
     /**
      * @return bool
      */
-    public function isAdmin()
+    public function isEditor()
     {
-        return in_array("ROLE_ADMIN", $this->getRoles());
+        if(in_array("ROLE_ADMIN", $this->getRoles()) || in_array("ROLE_EDITOR", $this->getRoles())){
+            return true;
+            }
+        return false;
     }
 
     /**

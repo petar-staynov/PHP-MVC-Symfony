@@ -13,28 +13,33 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class ItemController extends Controller
 {
     /**
-     * @Route("/add_item", name="add_item")
+     * @Route("/admin/item/add", name="admin_item_add")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      * @param Request $request
      * @return Response
      */
-    public function addItem(Request $request)
+    public function addItemAction(Request $request)
     {
         $item = new Item();
         $form = $this->createForm(ItemType::class, $item);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
-            $data = $form->getData();
-
+        if ($form->isSubmitted() && $form->isValid()) {
             $currentUser = $this->getUser();
             $item->setOwner($currentUser);
+            $item->setDiscounted();
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($item);
             $em->flush();
 
-            return $this->redirectToRoute('index');
+
+            return $this->redirectToRoute('admin_items_panel');
+//            return $this->render('items/item_add.html.twig',
+//                array(
+//                    'item_form' => $form->createView(),
+//                ));
+
         }
 
         return $this->render('items/item_add.html.twig',
@@ -43,54 +48,31 @@ class ItemController extends Controller
             ));
     }
 
-    /**
-     * @Route("/item/{id}", name="item_view")
-     * @Route("/admin/item/view/{id}", name="admin_item_view")
-     * @param $id
-     * @return Response
-     */
-    public function viewItem($id)
-    {
-        $item = $this
-            ->getDoctrine()
-            ->getRepository(Item::class)
-            ->find($id);
-
-        $dateObj = $item->getDateAdded();
-
-        return $this->render('items/item_view.html.twig', array(
-            'item' => $item,
-            'addedDate' => $dateObj->format('d-m-y'),
-        ));
-    }
 
     /**
-     * @Route("/item/edit/{id}", name="item_edit")
+     * @Route("/admin/item/edit/{id}", name="admin_item_edit")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      *
      * @param $id
      * @param Request $request
      * @return Response
      */
-    public function editItem($id, Request $request)
+    public function editItemAction($id, Request $request)
     {
         $item = $this->getDoctrine()->getRepository(Item::class)->find($id);
 
-        if($item === null)
-        {
+        if ($item === null) {
             return $this->redirectToRoute('index');
         }
         $currentUser = $this->getUser();
-        if(!$currentUser->isOwner($item) && !$currentUser->isAdmin())
-        {
+        if (!$currentUser->isOwner($item) && !$currentUser->isEditor()) {
             return $this->redirectToRoute("index");
         }
 
 
         $form = $this->createForm(ItemType::class, $item);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($item);
             $em->flush();
@@ -100,43 +82,40 @@ class ItemController extends Controller
             ));
         }
 
-        return $this->render('items/item_edit.html.twig', array(
+        return $this->render('items/item_delete.html.twig', array(
             'item' => $item, 'item_edit_form' => $form->createView()
         ));
     }
 
     /**
-     * @Route("/item/delete/{id}", name="item_delete")
+     * @Route("/admin/item/delete/{id}", name="admin_item_delete")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      *
      * @param $id
      * @param Request $request
      * @return Response
      */
-    public function deleteItem($id, Request $request)
+    public function deleteItemAction($id, Request $request)
     {
         $item = $this->getDoctrine()->getRepository(Item::class)->find($id);
 
-        if($item === null)
-        {
+        if ($item === null) {
             return $this->redirectToRoute('index');
         }
         $currentUser = $this->getUser();
-        if(!$currentUser->isOwner($item) && !$currentUser->isAdmin())
-        {
+        if (!$currentUser->isOwner($item) && !$currentUser->isAdmin()) {
             return $this->redirectToRoute("index");
         }
 
         $form = $this->createForm(ItemType::class, $item);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($item);
             $em->flush();
 
-            return $this->redirectToRoute('index');
+            return $this->redirectToRoute('admin_items_panel');
         }
         return $this->render('items/item_delete.html.twig',
             array('article' => $item,

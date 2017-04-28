@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Comment
  *
- * @ORM\Table(name="comment")
+ * @ORM\Table(name="comments")
  * @ORM\Entity(repositoryClass="WebStoreBundle\Repository\CommentRepository")
  */
 class Comment
@@ -37,8 +37,8 @@ class Comment
      * @ORM\ManyToOne(targetEntity="WebStoreBundle\Entity\User", inversedBy="comments")
      * @ORM\JoinColumn(name="author_id", referencedColumnName="id")
      */
-
     private $author;
+
     /**
      * @var int
      * @ORM\Column(name="author_id", type="integer")

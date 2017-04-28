@@ -5,25 +5,41 @@
         <div id="page-content-wrapper">
             <div class="container-fluid">
                 <div class="row">
-                    <h1>Edit categories</h1>
+                    <h1>Edit items</h1>
+                    {% if items|length > 0 %}
                     <table class="table table-hover">
                         <thead>
                         <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Discount</th>
                             <th>Category</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for item in items %}
+                            {% for item in items %}
+                                <tr>
+                                    <td style="font-size: x-large"> {{ item.name }} </td>
+                                    <td>{{ item.price }}</td>
+                                    <td>{{ item.getDiscount() }}%</td>
+                                    <td>{{ item.category }}</td>
+                                    <td>
+                                        <a class="btn btn-primary" href="{{ path('item_view', {'id': item.id}) }}">View</a>
+                                        <a class="btn btn-warning" href="{{ path('admin_item_edit', {'id': item.id}) }}">Edit</a>
+                                        <a class="btn btn-danger" href="{{ path('admin_item_delete', {'id': item.id}) }}">Delete</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
                             <tr>
-                                <td style="font-size: x-large"> {{ item.name }} </td>
-                                <td>
-                                    <a class="btn btn-info" href="">View</a>
-                                    <a class="btn btn-warning" href="">Edit</a>
-                                    <a class="btn btn-danger" href="">Delete</a>
+                                <td class="text-center" colspan="5" style="font-size: x-large">
+                                    <a class="btn btn-success" href="{{ path('admin_item_add') }}">Add new items</a>
                                 </td>
                             </tr>
-                        {% endfor %}
+                        {% else %}
+                            <p>There are no items in the server. You can add some</p>
+                            <a class="btn btn-success" href="{{ path('admin_item_add') }}">Add new items</a>
+                        {% endif %}
                         </tbody>
                     </table>
                 </div>

@@ -35,11 +35,8 @@ class Category
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="WebStoreBundle\Entity\Item")
-     * @ORM\JoinTable(
-     *     joinColumns={@ORM\JoinColumn(onDelete="CASCADE")},
-     *     inverseJoinColumns={@ORM\JoinColumn(onDelete="CASCADE")}
-     * )
+     * @ORM\OneToMany(targetEntity="WebStoreBundle\Entity\Item", mappedBy="category")
+     *
      */
     private $items;
 

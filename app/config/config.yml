@@ -40,6 +40,8 @@ twig:
     strict_variables: '%kernel.debug%'
     form_themes:
             - 'bootstrap_3_layout.html.twig'
+            - 'VichUploaderBundle:Form:fields.html.twig'
+
 
 # Doctrine Configuration
 doctrine:
@@ -70,3 +72,13 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
+vich_uploader:
+    db_driver: orm # or mongodb or propel or phpcr
+
+    mappings:
+            product_image:
+                uri_prefix:         /images/products
+                upload_destination: '%kernel.root_dir%/../web/images/items'
+                inject_on_load:     false
+                delete_on_update:   true
+                delete_on_remove:   true

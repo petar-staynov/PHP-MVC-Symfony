@@ -32,8 +32,7 @@ class Cart
 
     /**
      * @var ArrayCollection
-     *
-     * @ORM\ManyToMany(targetEntity="WebStoreBundle\Entity\Item")
+     * @ORM\ManyToMany(targetEntity="WebStoreBundle\Entity\Item", mappedBy="owner")
      */
     private $items;
 
