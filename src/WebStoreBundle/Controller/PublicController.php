@@ -7,9 +7,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use WebStoreBundle\Entity\Comment;
 use WebStoreBundle\Entity\Item;
 use WebStoreBundle\Entity\Category;
-
+use WebStoreBundle\Form\CommentType;
 
 class PublicController extends Controller
 {
@@ -47,17 +48,47 @@ class PublicController extends Controller
     /**
      * @Route("/item/{id}", name="item_view")
      * @param $id
+     * @param Request $request
      * @return Response
      */
-    public function viewItemAction($id)
+    public function viewItemAction($id, Request $request)
     {
         $item = $this
             ->getDoctrine()
             ->getRepository(Item::class)
             ->find($id);
 
+        $itemComments = $this
+            ->getDoctrine()
+            ->getRepository(Comment::class)
+            ->findBy(array('itemId' => $id));
+
+        $comment = new Comment();
+        $comment->setAuthor($this->getUser());
+        $comment->setAuthorId($this->getUser()->getId());
+
+        $comment->setItem($item);
+        $comment->setItemId($item->getId());
+
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($comment);
+            $em->flush();
+
+            $this->addFlash('success','Comment posted.');
+            return $this->redirect($request->headers->get('referer'));
+        }
+
+        if ($item === null) {
+            $this->addFlash('danger', 'This item doesn\'t exist');
+            $this->redirectToRoute('index');
+        }
         return $this->render('items/item_view.html.twig', array(
             'item' => $item,
+            'itemComments' => $itemComments,
+            'comment_form' => $form->createView(),
         ));
     }
 
@@ -83,6 +114,11 @@ class PublicController extends Controller
             ->getDoctrine()
             ->getRepository(Category::class)
             ->find($id);
+
+        if ($category === null) {
+            $this->addFlash('danger', 'This category doesn\'t exist');
+            $this->redirectToRoute('index');
+        }
 
         $categoryItems =
             $this

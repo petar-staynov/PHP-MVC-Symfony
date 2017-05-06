@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraint;
+use WebStoreBundle\Form\UserType;
 
 /**
  * User
@@ -89,12 +90,26 @@ class User implements UserInterface
      */
     private $roles;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="WebStoreBundle\Entity\Comment", mappedBy="author")
+     */
+    private $comments;
+    /**
+     * @var Cart
+     *
+     * @ORM\OneToOne(targetEntity="WebStoreBundle\Entity\Cart", mappedBy="owner")
+     */
+    private $cart;
+
 
     public function __construct()
     {
         $this->roles = new ArrayCollection();
         $this->items = new ArrayCollection();
         $this->money = 1000;
+        $this->cart = new Cart();
     }
 
     /**
@@ -326,6 +341,23 @@ class User implements UserInterface
             return true;
         }
         return false;
+    }
+
+    /**
+     * @param $cart
+     * @return User
+     */
+    public  function setCart($cart)
+    {
+        $this->cart = $cart;
+        return $this;
+    }
+
+    /**
+     * @return Cart
+     */
+    public function getCart(){
+        return $this->cart;
     }
 
     /**

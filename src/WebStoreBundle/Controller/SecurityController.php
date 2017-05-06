@@ -13,6 +13,10 @@ class SecurityController extends Controller
      */
     public function login()
     {
+        if($this->getUser()){
+            $this->addFlash('danger','You are logged in.');
+            return $this->redirectToRoute('index');
+        }
         return $this->render('security/login.html.twig');
     }
 }

@@ -19,22 +19,36 @@
                     </a>
                 </li>
                 {% if app.user.isEditor() %}
-                <li>
-                    <a href="{{ path('admin_categories_panel') }}">Edit Categories</a>
-                </li>
-                <li>
-                    <a href="{{ path('admin_items_panel') }}">Edit items</a>
-                </li>
+                    <li>
+                        <a href="{{ path('admin_categories_panel') }}">Edit Categories</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('admin_items_panel') }}">Edit items</a>
+                    </li>
                 {% endif %}
                 {% if app.user.IsADmin() %}
-                <li>
-                    <a href="{{ path('admin_users_panel') }}">Edit users</a>
-                </li>
+                    <li>
+                        <a href="{{ path('admin_users_panel') }}">Edit users</a>
+                    </li>
                 {% endif %}
                 <li>
                     <a href="{{ path('user_logout') }}">Logout</a>
                 </li>
             </ul>
+        </div>
+    </div>
+    {#FLASH MESSAGE BOX#}
+    <div id="wrapper" class="toggled">
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                {% for type, flash_messages in app.session.flashBag.all %}
+                    {% for flash_message in flash_messages %}
+                        <div class="alert alert-{{ type }}">
+                            {{ flash_message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     </div>
 </head>

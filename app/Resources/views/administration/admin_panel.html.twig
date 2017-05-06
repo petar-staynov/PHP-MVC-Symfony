@@ -7,7 +7,12 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1>Administration panel</h1>
-                        <h3>Hello <b>{{ app.user.getUsername() }}</b>, you are an <b>{{ role }}</b></h3>
+                        {% if app.user.isAdmin() %}
+                            <h3>Hello <b>{{ app.user.getUsername() }}</b>, you are an <b>Admin</b>
+                            </h3>
+                        {% elseif app.user.isEditor() %}
+                            <h3>Hello <b>{{ app.user.getUsername() }}</b>, you are an <b>Editor</b></h3>
+                        {% endif %}
                     </div>
                 </div>
             </div>

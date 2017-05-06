@@ -28,7 +28,7 @@ class Comment
      *
      * @ORM\Column(name="content", type="text")
      * @Assert\NotBlank(message="Content Field Is Required!")
-     * @Assert\Length(min="5")
+     * @Assert\Length(min="5", max="250")
      */
     private $content;
 
@@ -68,6 +68,8 @@ class Comment
     public function __construct()
     {
         $this->dateAdded = new \DateTime('now');
+//        $this->authorId = $this->getAuthor()->getId();
+//        $this->itemId = $this->getItem()->getId();
     }
 
     /**
@@ -98,6 +100,7 @@ class Comment
      * Get content
      *
      * @return string
+     *
      */
     public function getContent()
     {

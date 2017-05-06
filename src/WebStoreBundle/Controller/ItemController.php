@@ -14,7 +14,7 @@ class ItemController extends Controller
 {
     /**
      * @Route("/admin/item/add", name="admin_item_add")
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_EDITOR')")
      * @param Request $request
      * @return Response
      */
@@ -32,13 +32,8 @@ class ItemController extends Controller
             $em->persist($item);
             $em->flush();
 
-
+            $this->addFlash('success', 'Item added successfully.');
             return $this->redirectToRoute('admin_items_panel');
-//            return $this->render('items/item_add.html.twig',
-//                array(
-//                    'item_form' => $form->createView(),
-//                ));
-
         }
 
         return $this->render('administration/admin_item_add.html.twig',
@@ -50,8 +45,7 @@ class ItemController extends Controller
 
     /**
      * @Route("/admin/item/edit/{id}", name="admin_item_edit")
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
-     *
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_EDITOR')")
      * @param $id
      * @param Request $request
      * @return Response
@@ -61,7 +55,8 @@ class ItemController extends Controller
         $item = $this->getDoctrine()->getRepository(Item::class)->find($id);
 
         if ($item === null) {
-            return $this->redirectToRoute('index');
+            $this->addFlash('danger', 'This item doesn\'t exist.');
+            return $this->redirectToRoute('admin_items_panel');
         }
         $currentUser = $this->getUser();
         if (!$currentUser->isOwner($item) && !$currentUser->isEditor()) {
@@ -76,9 +71,9 @@ class ItemController extends Controller
             $em->persist($item);
             $em->flush();
 
-            return $this->redirectToRoute('item_view', array(
-                'id' => $item->getId()
-            ));
+            $this->addFlash('success', 'Item edited successfully.');
+            return $this->redirect($request->headers->get('referer'));
+
         }
 
         return $this->render('administration/admin_item_edit.html.twig', array(
@@ -89,8 +84,7 @@ class ItemController extends Controller
 
     /**
      * @Route("/admin/item/delete/{id}", name="admin_item_delete")
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
-     *
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_EDITOR')")
      * @param $id
      * @param Request $request
      * @return Response
@@ -100,7 +94,8 @@ class ItemController extends Controller
         $item = $this->getDoctrine()->getRepository(Item::class)->find($id);
 
         if ($item === null) {
-            return $this->redirectToRoute('index');
+            $this->addFlash('danger', 'This item doesn\'t exist.');
+            return $this->redirectToRoute('admin_items_panel');
         }
         $currentUser = $this->getUser();
         if (!$currentUser->isOwner($item) && !$currentUser->isAdmin()) {
@@ -115,6 +110,7 @@ class ItemController extends Controller
             $em->remove($item);
             $em->flush();
 
+            $this->addFlash('success', 'Item deleted successfully.');
             return $this->redirectToRoute('admin_items_panel');
         }
         return $this->render('administration/admin_item_delete.html.twig',

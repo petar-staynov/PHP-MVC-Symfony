@@ -138,6 +138,7 @@ class Item
     public function __construct()
     {
         $this->dateAdded = new \DateTime('now');
+        $this->updatedAt = new \DateTime('now');
         $this->comments = new ArrayCollection();
         $this->getDiscounted();
     }

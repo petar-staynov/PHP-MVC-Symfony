@@ -2,6 +2,7 @@
 
 {% block body %}
     <div class="container text-center">
+    <div class="panel-group">
         <div class="panel panel-default" style="max-width: 60%">
             <div class="panel-heading">Name: {{ item.name }}</div>
             <div class="panel-heading">Added by: {{ item.ownerUsername }} ({{ item.getOwnerName() }})</div>
@@ -15,10 +16,26 @@
             <div class="panel-default text-center">Price: {{ item.price }} BGN</div>
             <div class="panel-footer">
                 {% if app.user %}
-                    <a class="btn btn-success" href="#">Buy</a>
+                    <a class="btn btn-success" href="{{ path('cart_item_add', {'id': item.id}) }}">Buy</a>
                 {% endif %}
             </div>
+            {{ form_start(comment_form) }}
+            {{ form_widget(comment_form) }}
+            <button class="btn btn-primary" type="submit">Comment</button>
+            {{ form_end(comment_form) }}
+            <hr>
+            {% if itemComments|length > 0 %}
+                <div class="panel panel-primary">
+                    {% for comment in itemComments %}
+                        <div class="panel-body">
+                            <p><b>{{ comment.author.username }}:</b></p>
+                            <p>{{ comment.content }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>There are no comments</p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
-

@@ -24,25 +24,31 @@ class Cart
     private $id;
 
     /**
+     * @var User
+     * @ORM\OneToOne(targetEntity="WebStoreBundle\Entity\User", inversedBy="cart")
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id")
+     */
+    private $owner;
+
+    /**
      * @var int
-     *
-     * @ORM\Column(name="ownerId", type="integer", unique=true)
      */
     private $ownerId;
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="WebStoreBundle\Entity\Item", mappedBy="owner")
      */
     private $items;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="totalCost", type="decimal", precision=10, scale=2, nullable=true)
      */
     private $totalCost;
 
+    public function __construct()
+    {
+        $this->items = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -81,13 +87,13 @@ class Cart
     /**
      * Set items
      *
-     * @param array $items
+     * @param Item $item
      *
      * @return Cart
      */
-    public function setItems($items)
+    public function addItem($item)
     {
-        $this->items = $items;
+        $this->items[] = $item;
 
         return $this;
     }
@@ -103,27 +109,21 @@ class Cart
     }
 
     /**
-     * Set totalCost
-     *
-     * @param string $totalCost
-     *
-     * @return Cart
+     * @return User
      */
-    public function setTotalCost($totalCost)
+    public function getOwner(): User
     {
-        $this->totalCost = $totalCost;
-
-        return $this;
+        return $this->owner;
     }
 
     /**
-     * Get totalCost
-     *
-     * @return string
+     * @param User $owner
      */
-    public function getTotalCost()
+    public function setOwner(User $owner)
     {
-        return $this->totalCost;
+        $this->owner = $owner;
     }
+
+
 }
 

@@ -16,8 +16,6 @@ class DealsController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $session = $request->getSession();
-
         //Discounted items
         $deals = $this->getDoctrine()->getRepository(Item::class)->findBy(array('discounted' => 1));
 
