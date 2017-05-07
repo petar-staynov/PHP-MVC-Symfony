@@ -58,37 +58,44 @@ class PublicController extends Controller
             ->getRepository(Item::class)
             ->find($id);
 
+        if ($item === null) {
+            $this->addFlash('danger', 'This item doesn\'t exist');
+            $this->redirectToRoute('index');
+        }
+
         $itemComments = $this
             ->getDoctrine()
             ->getRepository(Comment::class)
             ->findBy(array('itemId' => $id));
 
-        $comment = new Comment();
-        $comment->setAuthor($this->getUser());
-        $comment->setAuthorId($this->getUser()->getId());
+        if ($this->getUser() !== null) {
+            $comment = new Comment();
+            $form = $this->createForm(CommentType::class, $comment);
 
-        $comment->setItem($item);
-        $comment->setItemId($item->getId());
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $comment->setAuthor($this->getUser());
+                $comment->setAuthorId($this->getUser()->getId());
+                $comment->setItem($item);
+                $comment->setItemId($item->getId());
 
-        $form = $this->createForm(CommentType::class, $comment);
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($comment);
-            $em->flush();
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($comment);
+                $em->flush();
 
-            $this->addFlash('success','Comment posted.');
-            return $this->redirect($request->headers->get('referer'));
+                $this->addFlash('success', 'Comment posted.');
+                return $this->redirect($request->headers->get('referer'));
+            }
+            return $this->render('items/item_view.html.twig', array(
+                'item' => $item,
+                'itemComments' => $itemComments,
+                'comment_form' => $form->createView(),
+            ));
         }
 
-        if ($item === null) {
-            $this->addFlash('danger', 'This item doesn\'t exist');
-            $this->redirectToRoute('index');
-        }
         return $this->render('items/item_view.html.twig', array(
             'item' => $item,
             'itemComments' => $itemComments,
-            'comment_form' => $form->createView(),
         ));
     }
 
@@ -128,7 +135,7 @@ class PublicController extends Controller
 
         return $this->render('categories/category_view.html.twig', array(
             'category' => $category,
-            'categoryItems'=> $categoryItems,
+            'categoryItems' => $categoryItems,
         ));
     }
 }

@@ -51,6 +51,10 @@ class CartController extends Controller
 
         $session = $this->get('session');
         $cart = $session->get('cart');
+        if ($cart === null) {
+            $cart = [];
+            $session->set('cart', $cart);
+        }
 
         //Creates a cart in the session if such doesn't exist
         if (!$cart) {
@@ -86,6 +90,14 @@ class CartController extends Controller
     {
         $session = $this->get('session');
         $cart = $session->get('cart');
+        if ($cart === null) {
+            $cart = [];
+            $session->set('cart', $cart);
+        }
+        if(count($cart) == 0){
+            $this->addFlash('warning', 'Your cart is empty.');
+            $this->redirectToRoute('cart_view');
+        }
 
         $cart[$id]['amount']++;
 
@@ -104,6 +116,14 @@ class CartController extends Controller
     {
         $session = $this->get('session');
         $cart = $session->get('cart');
+        if ($cart === null) {
+            $cart = [];
+            $session->set('cart', $cart);
+        }
+        if(count($cart) == 0){
+            $this->addFlash('warning', 'Your cart is empty.');
+            $this->redirectToRoute('cart_view');
+        }
 
         $cart[$id]['amount']--;
         if ($cart[$id]['amount'] <= 0) {
@@ -125,6 +145,14 @@ class CartController extends Controller
     {
         $session = $this->get('session');
         $cart = $session->get('cart');
+        if ($cart === null) {
+            $cart = [];
+            $session->set('cart', $cart);
+        }
+        if(count($cart) == 0){
+            $this->addFlash('warning', 'Your cart is empty.');
+            $this->redirectToRoute('cart_view');
+        }
 
         unset($cart[$id]);
 
@@ -158,6 +186,14 @@ class CartController extends Controller
     {
         $session = $this->get('session');
         $cart = $session->get('cart');
+        if ($cart === null) {
+            $cart = [];
+            $session->set('cart', $cart);
+        }
+        if(count($cart) == 0){
+            $this->addFlash('warning', 'Your cart is empty.');
+            $this->redirectToRoute('cart_view');
+        }
 
         //Checks if items in cart are the same as on server and if there is enough quantity
         $differenceProblem = false;
@@ -169,7 +205,7 @@ class CartController extends Controller
             $id = $cartItem['id'];
             $item = $this->getDoctrine()->getRepository(Item::class)->find($id);
 
-            //Checks price
+            //Checks price and updates it
             if ($item->getPrice() != $cartItem['price']) {
                 $differenceProblem = true;
 
@@ -193,6 +229,9 @@ class CartController extends Controller
             $totalCost += $item->getPrice();
         }
 
+        //Updates items in session
+        $session->set('cart', $cart);
+
         //Checks money
         if ($this->getUser()->getMoney() < $totalCost) {
             $moneyProblem = true;
@@ -200,14 +239,32 @@ class CartController extends Controller
             $this->addFlash('warning', 'You don\'t have enough money');
         }
 
-        $session->set('cart', $cart);
+        //Final check
         if ($differenceProblem == true || $quantityProblem == true || $moneyProblem == true) {
             return $this->redirectToRoute('cart_view');
         }
 
-        //TODO Set session, Add cart to database, Update item database entry (quantity)
+        //Lowers qualities
+        $em = $this->getDoctrine()->getManager();
+        foreach ($cart as $cartItem){
+            $dbItem = $this->getDoctrine()->getRepository(Item::class)->find($cartItem['id']);
+            $dbItemNewQuantity = $dbItem->getQuantity() - $cartItem['amount'];
+            $dbItem->setQuantity($dbItemNewQuantity);
+        }
 
+        //Lowers money
+        $userMoney = $this->getUser()->getMoney();
+        $newUserMoney = $userMoney-$totalCost;
+        $this->getUser()->setMoney($newUserMoney);
+        $session->set('myMoney', $newUserMoney);
+        
+        //Updates DB and session
+        $em->flush();
 //        $session->set('cart', []);
+
+        //TODO database carts
+
+
 
         $this->addFlash('success', 'Checkout successful.');
         return $this->redirectToRoute('cart_view');

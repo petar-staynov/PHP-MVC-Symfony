@@ -24,6 +24,7 @@ class ItemType extends AbstractType
             ->add('name', TextType::class)
             ->add('price', MoneyType::class, array(
                 'currency' => 'BGN',
+                'label' => 'Price (discount calculated automatically)'
             ))
             ->add('description', TextareaType::class)
             ->add('category', EntityType::class, array(
@@ -38,8 +39,8 @@ class ItemType extends AbstractType
             ->add('discountExpirationDate', DateType::class, ['years' => range(2017, 2020)])
             ->add('imageFile', VichFileType::class, array(
                 'required' => false,
-                'allow_delete' => true, // not mandatory, default is true
-                'download_link' => true, // not mandatory, default is true
+                'allow_delete' => false, // not mandatory, default is true
+                'download_link' => false, // not mandatory, default is true
             ));
     }
 

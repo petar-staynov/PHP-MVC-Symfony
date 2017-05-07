@@ -140,7 +140,6 @@ class Item
         $this->dateAdded = new \DateTime('now');
         $this->updatedAt = new \DateTime('now');
         $this->comments = new ArrayCollection();
-        $this->getDiscounted();
     }
 
     /**
@@ -195,7 +194,7 @@ class Item
      */
     public function getPrice()
     {
-        if ($this->discountValue == 0) {
+        if ($this->getDiscount() == 0 || $this->getDiscounted() == 0) {
             return $this->price;
         }
         return $this->price - ($this->price * ($this->getDiscount() / 100));
@@ -227,6 +226,7 @@ class Item
 
     /**
      * @return bool|string
+     * @param $length
      */
     public function getDescriptionSummary($length = 100)
     {
@@ -332,7 +332,7 @@ class Item
     }
 
     /**
-     * Set discount
+     * Set discount in percent
      * @param mixed $discountValue
      * @return Item
      */

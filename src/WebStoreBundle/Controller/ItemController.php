@@ -20,6 +20,8 @@ class ItemController extends Controller
      */
     public function addItemAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
+
         $item = new Item();
         $form = $this->createForm(ItemType::class, $item);
         $form->handleRequest($request);
@@ -27,8 +29,14 @@ class ItemController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $currentUser = $this->getUser();
             $item->setOwner($currentUser);
+            if($item->getDiscounted() == true &&
+                $item->getDiscount() <= 0 ||
+                $item->getDiscountExpirationDate() <= new \DateTime('now')){
 
-            $em = $this->getDoctrine()->getManager();
+
+                $this->addFlash('danger', 'Discount too low or discount date is invalid.');
+                return $this->redirect($request->headers->get('referer'));
+            }
             $em->persist($item);
             $em->flush();
 
@@ -52,6 +60,8 @@ class ItemController extends Controller
      */
     public function editItemAction($id, Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
+
         $item = $this->getDoctrine()->getRepository(Item::class)->find($id);
 
         if ($item === null) {
@@ -67,8 +77,14 @@ class ItemController extends Controller
         $form = $this->createForm(ItemType::class, $item);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($item);
+            if($item->getDiscounted() == true &&
+                $item->getDiscount() <= 0 ||
+                $item->getDiscountExpirationDate() <= new \DateTime('now')){
+                
+                $this->addFlash('danger', 'Discount too low or discount date is invalid.');
+                return $this->redirect($request->headers->get('referer'));
+            }
+
             $em->flush();
 
             $this->addFlash('success', 'Item edited successfully.');

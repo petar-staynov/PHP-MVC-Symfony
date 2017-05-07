@@ -1,41 +1,42 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container text-center">
-    <div class="panel-group">
-        <div class="panel panel-default" style="max-width: 60%">
-            <div class="panel-heading">Name: {{ item.name }}</div>
-            <div class="panel-heading">Added by: {{ item.ownerUsername }} ({{ item.getOwnerName() }})</div>
-            <div class="panel-heading">Left in stock: {{ item.getQuantity() }}</div>
-            <div class="panel-heading">Added on {{ item.getDateAdded.format('d-m-y') }}</div>
-            <div class="panel-body">
-                <img src="{{ asset(item.imagePath) }}" class="img-responsive" style="width:100%" alt="Image">
-            </div>
-            <div class="panel-default text-center">{{ item.description }}</div>
-            <div class="panel divider"></div>
-            <div class="panel-default text-center">Price: {{ item.price }} BGN</div>
-            <div class="panel-footer">
-                {% if app.user %}
-                    <a class="btn btn-success" href="{{ path('cart_item_add', {'id': item.id}) }}">Buy</a>
+    <div class="container">
+        <div class="panel-group text-center">
+            <div class="panel panel-default" style="max-width: 60%">
+                <div class="panel-heading">Name: {{ item.name }}</div>
+                <div class="panel-heading">Added by: {{ item.ownerUsername }} ({{ item.getOwnerName() }})</div>
+                <div class="panel-heading">Left in stock: {{ item.getQuantity() }}</div>
+                <div class="panel-heading">Added on {{ item.getDateAdded.format('d-m-y') }}</div>
+                <div class="panel-body">
+                    <img src="{{ asset(item.imagePath) }}" class="img-responsive" style="width:100%" alt="Image">
+                </div>
+                <div class="panel-default text-center">{{ item.description }}</div>
+                <div class="panel divider"></div>
+                <div class="panel-default text-center">Price: {{ item.price }} BGN</div>
+                <div class="panel-footer">
+                    {% if app.user %}
+                        <a class="btn btn-success" href="{{ path('cart_item_add', {'id': item.id}) }}">Buy</a>
+                </div>
+                    {{ form_start(comment_form) }}
+                    {{ form_widget(comment_form) }}
+                    <button class="btn btn-primary" type="submit">Comment</button>
+                    {{ form_end(comment_form) }}
+                <hr>
+                {% endif %}
+                {% if itemComments|length > 0 %}
+                    <div class="panel panel-primary">
+                        {% for comment in itemComments %}
+                            <div class="panel-body">
+                                <p><b>{{ comment.author.username }}:</b></p>
+                                <p>{{ comment.content }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>There are no comments</p>
                 {% endif %}
             </div>
-            {{ form_start(comment_form) }}
-            {{ form_widget(comment_form) }}
-            <button class="btn btn-primary" type="submit">Comment</button>
-            {{ form_end(comment_form) }}
-            <hr>
-            {% if itemComments|length > 0 %}
-                <div class="panel panel-primary">
-                    {% for comment in itemComments %}
-                        <div class="panel-body">
-                            <p><b>{{ comment.author.username }}:</b></p>
-                            <p>{{ comment.content }}</p>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p>There are no comments</p>
-            {% endif %}
         </div>
     </div>
 {% endblock %}

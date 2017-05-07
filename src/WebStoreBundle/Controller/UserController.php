@@ -15,20 +15,16 @@ class UserController extends Controller
 {
     /**
      * @Route("/admin/user/add", name="admin_user_add")
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     * @Security("has_role('ROLE_ADMIN')")
      * @param Request $request
      * @return Response
      */
     public function addUserAction(Request $request)
     {
-        $renderTemplate = 'administration/admin_user_add.html.twig';
-        $renderParameters = [];
-
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
-        $renderParameters = ['admin_register_form' => $form->createView()];
 
         if ($form->isSubmitted() && $form->isValid()) {
             $password = $this
@@ -46,7 +42,9 @@ class UserController extends Controller
 
             return $this->redirectToRoute('admin_users_panel');
         }
-        return $this->securedRenderer($renderTemplate, $renderParameters);
+        return $this->render('administration/admin_user_add.html.twig', array(
+            'admin_register_form' => $form->createView(),
+        ));
     }
 
 
@@ -100,31 +98,5 @@ class UserController extends Controller
         $em->flush();
 
         return $this->redirectToRoute('admin_users_panel');
-    }
-
-    /**
-     * @param $renderTemplate
-     * @param $renderParameters
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     */
-    public function securedRenderer($renderTemplate, $renderParameters)
-    {
-        //Checks if logged
-        $currentUser = $this->getUser();
-        if ($currentUser === null) {
-            return $this->redirectToRoute('index');
-        }
-
-        //Check user role and send it to twig. If no special role, redirect to index
-        $currentUserRoles = $currentUser->getRoles();
-        if (in_array('ROLE_ADMIN', $currentUserRoles)) {
-            $renderParameters['role'] = 'admin';
-            return $this->render($renderTemplate, $renderParameters);
-        } elseif (in_array('ROLE_EDITOR', $currentUserRoles)) {
-            $renderParameters['role'] = 'editor';
-            return $this->render($renderTemplate, $renderParameters);
-        } else {
-            return $this->redirectToRoute('index');
-        }
     }
 }

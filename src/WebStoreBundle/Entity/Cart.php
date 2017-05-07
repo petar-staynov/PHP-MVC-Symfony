@@ -25,7 +25,7 @@ class Cart
 
     /**
      * @var User
-     * @ORM\OneToOne(targetEntity="WebStoreBundle\Entity\User", inversedBy="cart")
+     * @ORM\ManyToOne(targetEntity="WebStoreBundle\Entity\User", inversedBy="cart")
      * @ORM\JoinColumn(name="owner_id", referencedColumnName="id")
      */
     private $owner;
@@ -94,7 +94,6 @@ class Cart
     public function addItem($item)
     {
         $this->items[] = $item;
-
         return $this;
     }
 
@@ -123,7 +122,5 @@ class Cart
     {
         $this->owner = $owner;
     }
-
-
 }
 

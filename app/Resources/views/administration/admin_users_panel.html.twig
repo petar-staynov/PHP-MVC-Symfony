@@ -18,8 +18,8 @@
                             <tr>
                                 <td style="font-size: x-large"> {{ user.getUsername() }} </td>
                                 <td>
-                                    <a class="btn btn-info disabled" href="{{ path('admin_users_panel', {'id': user.id}) }}">View</a>
-                                    <a class="btn btn-warning disabled" href="{{ path('admin_user_edit', {'id': user.id}) }}">Edit</a>
+                                    <a class="btn btn-success" href="{{ path('admin_user_promote', {'id': user.id}) }}">Promote</a>
+                                    <a class="btn btn-warning disabled" href="{{ path('admin_users_panel', {'id': user.id}) }}">Disable</a>
                                     <a class="btn btn-danger" href="{{ path('admin_user_delete', {'id': user.id}) }}">Delete</a>
                                 </td>
                             </tr>

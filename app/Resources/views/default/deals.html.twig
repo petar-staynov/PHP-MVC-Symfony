@@ -6,14 +6,17 @@
         <div class="row">
             {% if items|length > 0 %}
                 {% for item in items %}
-                    <div class="col-lg-3">
+                    <div class="col col-xs-4">
                         <div class="panel panel-primary">
                             <div class="panel-heading text-center">{{ item.name }}</div>
                             <div class="panel-default text-center">Left in stock: {{ item.getQuantity() }}</div>
-                            <div class="panel-body" style="height: 250px">
-                                <img src="{{ asset(item.imagePath) }}" class="img-responsive"  style="width:100%; max-height: 220px" alt="Image"></div>
+                            <div class="panel-body" style="height: 200px">
+                                <img src="{{ asset(item.imagePath) }}" class="img-responsive"
+                                     style="margin: 0 auto; height: inherit; max-height: 200px" alt="Image"></div>
+                            <hr>
                             <div class="panel-default text-center">{{ item.price }} BGN</div>
-                            <div class="panel-footer"><a class="btn btn-primary center-block" href="{{ path('item_view', {'id': item.id}) }}">View</a></div>
+                            <div class="panel-footer"><a class="btn btn-primary center-block"
+                                                         href="{{ path('item_view', {'id': item.id}) }}">View</a></div>
                         </div>
                     </div>
                 {% endfor %}

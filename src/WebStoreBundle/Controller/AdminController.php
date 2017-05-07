@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use WebStoreBundle\Entity\Category;
 use WebStoreBundle\Entity\Item;
 use WebStoreBundle\Entity\User;
+use WebStoreBundle\Entity\Role;
 use WebStoreBundle\Form\CategoryType;
 
 class AdminController extends Controller
@@ -76,7 +77,7 @@ class AdminController extends Controller
     /**
      * @Route("/admin/users_panel", name="admin_users_panel")
      * @param Request $request
-     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_EDITOR')")
+     * @Security("has_role('ROLE_ADMIN')")
      * @return Response
      */
     public function usersPanelAction(Request $request)
@@ -86,5 +87,27 @@ class AdminController extends Controller
         return $this->render('administration/admin_users_panel.html.twig', array(
             'users' => $users
         ));
+    }
+
+    /**
+     * @Route("/admin/user/promote/{id}", name="admin_user_promote")
+     * @param $id
+     * @param Request $request
+     * @Security("has_role('ROLE_ADMIN')")
+     * @return Response
+     */
+    public function userPromoteAction($id, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->getDoctrine()->getRepository(User::class)->find($id);
+
+        $roleRepo = $this->getDoctrine()->getRepository(Role::class);
+        $userRole = $roleRepo->findOneBy(['name' => 'ROLE_USER']);
+
+        $user->addRole($userRole);
+        $em->flush();
+
+        $this->addFlash('success', 'User ' . $user->getUsername() . "has been promoted to editor");
+        return $this->redirectToRoute('admin_users_panel');
     }
 }

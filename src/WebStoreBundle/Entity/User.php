@@ -96,20 +96,19 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity="WebStoreBundle\Entity\Comment", mappedBy="author")
      */
     private $comments;
+
     /**
-     * @var Cart
+     * @var ArrayCollection
      *
-     * @ORM\OneToOne(targetEntity="WebStoreBundle\Entity\Cart", mappedBy="owner")
+     * @ORM\OneToMany(targetEntity="WebStoreBundle\Entity\Cart", mappedBy="owner")
      */
     private $cart;
-
 
     public function __construct()
     {
         $this->roles = new ArrayCollection();
         $this->items = new ArrayCollection();
         $this->money = 1000;
-        $this->cart = new Cart();
     }
 
     /**
