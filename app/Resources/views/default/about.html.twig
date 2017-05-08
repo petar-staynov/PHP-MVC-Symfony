@@ -2,7 +2,76 @@
 
 {% block body %}
 <h1>About Page:</h1>
-    <p>Basic online store based on Symfony3 PHP Framework.</p>
+    <p>"Basic" online store based on Symfony3 PHP Framework.</p>
     <p>Made for <a href="https://softuni.bg/trainings/1583/php-mvc-frameworks-march-2017">https://softuni.bg/trainings/1583/php-mvc-frameworks-march-2017</a> </p>
+    <hr>
+    <article>
+        <h2>Testing:</h2>
+        <p>Admin account: name=admin password=admin</p>
+        <p>Editor account: name=pesho password=1234</p>
+        <p>User account: name=user password=user</p>
+        <h2>Features:</h2>
+        <h4>Basic</h4>
+        <ol>
+            <li>It works</li>
+            <li>Based on Symfony 3.2.7 (PHP 7.1.1)</li>
+            <li>Uses bootstrap and its HTML5 validation for fields</li>
+            <li>Flash messages for action success or error.</li>
+            <li>Uses annotations</li>
+            <li>Uses @Security for user_role check and if he's logged in</li>
+            <li>Uses @Assert for additional backend constrains and validation.</li>
+        </ol>
+        <h4>Users</h4>
+        <ol>
+            <li>Register</li>
+            <li>Login</li>
+            <li>Update profile</li>
+            <li>Have free money</li>
+            <li>ROLE_USER</li>
+        </ol>
+        <h4>Admin panel</h4>
+        <ol>
+            <li>Add/edit/delete items</li>
+            <li>Add/edit/delete categories</li>
+            <li>Add/delete users</li>
+        </ol>
+        <h4>Items</h4>
+        <ol>
+            <li>Have Name, Description, Price, Quantity, <b>Image</b>, Owner(Author), DateAdded, Discount Switch, Discount Value, Discount expiration date</li>
+            <li>Can be created, bought, updated, deleted, edited.</li>
+            <li>Have comments</li>
+        </ol>
+        <h4>Categories:</h4>
+        <ol>
+            <li>Have their own items</li>
+            <li>Can be created, edited, deleted. Deleting also deletes their items.</li>
+        </ol>
+        <h4>Cart</h4>
+        <ol>
+            <li>Stored in session</li>
+            <li>Items can be added</li>
+            <li>Items can be removed</li>
+            <li>Items can have their quantity changed</li>
+            <li>Users can "checkout"</li>
+            <li>Compares cart items to items in database for name/price difference and quantity availability</li>
+        </ol>
+        <h4>Purchased</h4>
+        <ol>
+            <li>After checkout items become purchased and can be resold by the user on the <b>Market</b>, unless claimed permanently.</li>
+        </ol>
+        <h4>Market</h4>
+        <ol>
+            <li>Users can sell bought products.</li>
+            <li>Users can remove bought products from the market and return them to purchases</li>
+        </ol>
+        <h4>Deals</h4>
+        <ol>
+            <li>Items on discount are listed on the deals page.</li>
+        </ol>
+        <h4>Comments:</h4>
+        <ol>
+            <li>Users can comment on items.</li>
+        </ol>
+    </article>
 {% endblock %}
 

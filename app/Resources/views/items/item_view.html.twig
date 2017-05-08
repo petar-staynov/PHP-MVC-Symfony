@@ -13,7 +13,7 @@
                 </div>
                 <div class="panel-default text-center">{{ item.description }}</div>
                 <div class="panel divider"></div>
-                <div class="panel-default text-center">Price: {{ item.price }} BGN</div>
+                <div class="panel-heading text-center">Price: {{ item.price }} BGN</div>
                 <div class="panel-footer">
                     {% if app.user %}
                         <a class="btn btn-success" href="{{ path('cart_item_add', {'id': item.id}) }}">Buy</a>

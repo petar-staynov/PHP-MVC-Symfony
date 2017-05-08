@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="panel-group text-center">
+            <div class="panel panel-default" style="max-width: 60%">
+                <div class="panel-heading">Name: {{ item.name }}</div>
+                <div class="panel-heading">Added by: {{ item.ownerUsername }} ({{ item.getOwnerName() }})</div>
+                <div class="panel-heading">Added on {{ item.getDateAdded.format('d-m-y') }}</div>
+                <div class="panel-body">
+                    <img src="{{ asset(item.imagePath) }}" class="img-responsive" style="width:100%" alt="Image">
+                </div>
+                <div class="panel-default text-center">{{ item.description }}</div>
+                <div class="panel divider"></div>
+                <div class="panel-heading text-center">Price: {{ item.price }} BGN</div>
+                {#<div class="panel-footer">#}
+                {#{% if app.user %}#}
+                {#<a class="btn btn-success" href="{{ path('cart_item_add', {'id': item.id}) }}">Buy</a>#}
+                {#</div>#}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container center-block text-center">
+        <h1>My previous purchases</h1>
+        {% if items|length > 0 %}
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Price</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td style="font-size: x-large">
+                            {{ item['name'] }}
+                        </td>
+                        <td>
+                            {{ item['price'] }}
+                        </td>
+                        <td>
+                            <a href="{{ path('cart_purchases_claim', {'index': loop.index }) }}">
+                                <button class="btn btn-success">Claim</button>
+                            </a>
+                            <a href="{{ path('item_view', {'id': item['id']}) }}">
+                                <button class="btn btn-primary">View</button>
+                            </a>
+                            <a href="{{ path('cart_purchases_sell', {'index': loop.index}) }}">
+                                <button class="btn btn-warning">Sell</button>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <h1>You do not have previous purchases</h1>
+        {% endif %}
+    </div>
+{% endblock %}
+
