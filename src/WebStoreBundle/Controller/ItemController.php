@@ -80,7 +80,7 @@ class ItemController extends Controller
             if($item->getDiscounted() == true &&
                 $item->getDiscount() <= 0 ||
                 $item->getDiscountExpirationDate() <= new \DateTime('now')){
-                
+
                 $this->addFlash('danger', 'Discount too low or discount date is invalid.');
                 return $this->redirect($request->headers->get('referer'));
             }

@@ -2,6 +2,7 @@
 
 namespace WebStoreBundle\Entity;
 
+use Doctrine\DBAL\Types\ArrayType;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -25,7 +26,7 @@ class Cart
 
     /**
      * @var User
-     * @ORM\ManyToOne(targetEntity="WebStoreBundle\Entity\User", inversedBy="cart")
+     * @ORM\OneToOne(targetEntity="WebStoreBundle\Entity\User", inversedBy="cart")
      * @ORM\JoinColumn(name="owner_id", referencedColumnName="id")
      */
     private $owner;
@@ -37,6 +38,7 @@ class Cart
 
     /**
      * @var ArrayCollection
+     * @ORM\Column(name="items", type="array", nullable=true)
      */
     private $items;
 
@@ -44,11 +46,6 @@ class Cart
      * @var string
      */
     private $totalCost;
-
-    public function __construct()
-    {
-        $this->items = new ArrayCollection();
-    }
 
     /**
      * Get id
@@ -108,6 +105,30 @@ class Cart
     }
 
     /**
+     * Set new array for items
+     * @param $itemsArr
+     * @return Cart
+     */
+    public function setItems($itemsArr)
+    {
+        $this->items = $itemsArr;
+        return $this;
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getItem($id){
+        foreach ($this->items as  $item){
+            if($item['id'] == $id){
+                return $item;
+            }
+        }
+        return null;
+    }
+
+    /**
      * @return User
      */
     public function getOwner(): User
@@ -123,4 +144,3 @@ class Cart
         $this->owner = $owner;
     }
 }
-

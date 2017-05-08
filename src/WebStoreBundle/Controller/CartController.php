@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use WebStoreBundle\Entity\Cart;
 use WebStoreBundle\Entity\Item;
+use WebStoreBundle\Entity\ItemUsed;
 
 class CartController extends Controller
 {
@@ -61,7 +62,7 @@ class CartController extends Controller
             $session->set('cart', array());
         }
 
-        //Checks if the item is already in the cart.
+        //Checks if the item is already in the cart session.
         if (!array_key_exists($item->getId(), $cart)) {
             $cart[$item->getId()] = [
                 'id' => $item->getId(),
@@ -94,7 +95,7 @@ class CartController extends Controller
             $cart = [];
             $session->set('cart', $cart);
         }
-        if(count($cart) == 0){
+        if (count($cart) == 0) {
             $this->addFlash('warning', 'Your cart is empty.');
             $this->redirectToRoute('cart_view');
         }
@@ -120,7 +121,7 @@ class CartController extends Controller
             $cart = [];
             $session->set('cart', $cart);
         }
-        if(count($cart) == 0){
+        if (count($cart) == 0) {
             $this->addFlash('warning', 'Your cart is empty.');
             $this->redirectToRoute('cart_view');
         }
@@ -128,6 +129,7 @@ class CartController extends Controller
         $cart[$id]['amount']--;
         if ($cart[$id]['amount'] <= 0) {
             unset($cart[$id]);
+            $cart = array_values($cart);
         }
 
         $session->set('cart', $cart);
@@ -149,7 +151,7 @@ class CartController extends Controller
             $cart = [];
             $session->set('cart', $cart);
         }
-        if(count($cart) == 0){
+        if (count($cart) == 0) {
             $this->addFlash('warning', 'Your cart is empty.');
             $this->redirectToRoute('cart_view');
         }
@@ -185,14 +187,14 @@ class CartController extends Controller
     public function checkOutAction()
     {
         $session = $this->get('session');
-        $cart = $session->get('cart');
-        if ($cart === null) {
-            $cart = [];
-            $session->set('cart', $cart);
+        $cartSession = $session->get('cart');
+        if ($cartSession === null) {
+            $cartSession = [];
+            $session->set('cart', $cartSession);
         }
-        if(count($cart) == 0){
+        if (count($cartSession) == 0) {
             $this->addFlash('warning', 'Your cart is empty.');
-            $this->redirectToRoute('cart_view');
+            return $this->redirectToRoute('cart_view');
         }
 
         //Checks if items in cart are the same as on server and if there is enough quantity
@@ -201,7 +203,7 @@ class CartController extends Controller
         $moneyProblem = false;
 
         $totalCost = 0;
-        foreach ($cart as $cartItem) {
+        foreach ($cartSession as $cartItem) {
             $id = $cartItem['id'];
             $item = $this->getDoctrine()->getRepository(Item::class)->find($id);
 
@@ -212,7 +214,7 @@ class CartController extends Controller
                 $cartItem['price'] = $item->getPrice();
                 $cartItem['name'] = $item->getName();
 
-                $cart[$id] = $cartItem;
+                $cartSession[$id] = $cartItem;
                 $this->addFlash('warning', 'Some of your cart items have changed since your last review. Please check your cart again.');
             }
 
@@ -230,7 +232,7 @@ class CartController extends Controller
         }
 
         //Updates items in session
-        $session->set('cart', $cart);
+        $session->set('cart', $cartSession);
 
         //Checks money
         if ($this->getUser()->getMoney() < $totalCost) {
@@ -244,12 +246,30 @@ class CartController extends Controller
             return $this->redirectToRoute('cart_view');
         }
 
-        //Lowers qualities
+
+        /////////////////Gets user's previous cart from DB or makes on if there is none//////
         $em = $this->getDoctrine()->getManager();
-        foreach ($cart as $cartItem){
+
+        //Makes purchases cart if there isnt one
+        $cartEntity = $this->getDoctrine()->getRepository(Cart::class)->findOneBy(['owner' => $this->getUser()]);
+        if ($cartEntity == null) {
+            $cartEntity = new Cart();
+            $cartEntity->setOwner($this->getUser());
+            $this->getUser()->setCart($cartEntity);
+            $em->persist($cartEntity);
+        }
+
+
+        //Updates item quantity in DB
+        foreach ($cartSession as $cartItem) {
             $dbItem = $this->getDoctrine()->getRepository(Item::class)->find($cartItem['id']);
             $dbItemNewQuantity = $dbItem->getQuantity() - $cartItem['amount'];
             $dbItem->setQuantity($dbItemNewQuantity);
+
+            //Adds cart session item to cart entity multiplied by its quantity
+            for ($i = 0; $i < $cartItem['amount']; $i++){
+                $cartEntity->addItem($cartItem);
+            }
         }
 
         //Lowers money
@@ -257,16 +277,127 @@ class CartController extends Controller
         $newUserMoney = $userMoney-$totalCost;
         $this->getUser()->setMoney($newUserMoney);
         $session->set('myMoney', $newUserMoney);
-        
-        //Updates DB and session
+
+        //Updates DB and clears session cart
         $em->flush();
-//        $session->set('cart', []);
-
-        //TODO database carts
-
-
+        $session->set('cart', []);
 
         $this->addFlash('success', 'Checkout successful.');
         return $this->redirectToRoute('cart_view');
     }
+
+    /**
+     * @Route("/cart/history", name="cart_purchases")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     * @return Response
+     */
+    public function viewBoughtItemsAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $user = $this->getUser();
+        $userId = $user->getId();
+
+        //Creates database cart for the user if there isnt one
+        $userItemsEntity = $this->getDoctrine()->getRepository(Cart::class)->findOneBy(['owner' => $user]);
+        if ($userItemsEntity == null) {
+            $userItemsEntity = new Cart();
+            $userItemsEntity->setOwner($this->getUser());
+            $userItemsEntity->setItems([]);
+            $this->getUser()->setCart($userItemsEntity);
+            $em->persist($userItemsEntity);
+            $em->flush();
+            $this->redirectToRoute('cart_purchases');
+        }
+
+        $userItemsArr = $userItemsEntity->getItems();
+
+//        var_dump($userItemsArr);
+//        exit;
+
+        $items = [];
+        foreach ($userItemsArr as $userItem){
+            $items[] = $userItem;
+        }
+        return $this->render('default/cart_history.html.twig', array(
+            'items' => $items,
+        ));
+    }
+
+    /**
+     * @Route("/cart/history/sell/{index}", name="cart_purchases_sell")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     * @param $index
+     * @return Response
+     */
+    public function sellBoughtItemAction($index)
+    {
+        $index = $index-1;
+        $em = $this->getDoctrine()->getManager();
+
+        $cartEntity = $this->getDoctrine()->getRepository(Cart::class)->findOneBy(['owner' => $this->getUser()]);
+        if ($cartEntity == null){
+            $this->addFlash('danger', 'No such item');
+            return $this->redirectToRoute('cart_purchases');
+        }
+
+        $itemsArr = $cartEntity->getItems();
+        $itemsArrKeys = array_keys($itemsArr);
+
+        $currentItem = $itemsArr[$itemsArrKeys[$index]];
+
+        $originalItem = $this->getDoctrine()->getRepository(Item::class)->findOneBy(['id' => $currentItem['id']]);
+
+        //Creates second hand copy of original item
+        $usedItemEntity = new ItemUsed();
+        $usedItemEntity->setOwner($this->getUser());
+        $usedItemEntity->setOwnerId($this->getUser()->getId());
+        $usedItemEntity->setName($currentItem['name']);
+        $usedItemEntity->setDescription($originalItem->getDescription());
+        $usedItemEntity->setPrice($currentItem['price']);
+        $usedItemEntity->setImageName($originalItem->getImageName());
+        $usedItemEntity->setReferenceId($originalItem->getId());
+
+        //Removes item being sold from db cart
+        unset($itemsArr[$index]);
+        $itemsArr = array_values($itemsArr);
+
+        $cartEntity->setItems($itemsArr);
+
+        $em->persist($usedItemEntity);
+        $em->flush();
+
+
+        $this->addFlash('success', 'Item put up for sale');
+        return $this->redirectToRoute('cart_purchases');
+    }
+    /**
+     * Removes item from previous purchases.
+     *
+     * @Route("/cart/history/claim/{index}", name="cart_purchases_claim")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     * @param $index
+     * @return Response
+     */
+    public function claimBoughtItemAction($index){
+        $index = $index-1;
+
+        $em = $this->getDoctrine()->getManager();
+        $cartEntity = $this->getDoctrine()->getRepository(Cart::class)->findOneBy(['owner' => $this->getUser()]);
+        if ($cartEntity == null){
+            $this->addFlash('danger', 'No such item');
+            return $this->redirectToRoute('cart_purchases');
+        }
+        $itemsArr = $cartEntity->getItems();
+
+        unset($itemsArr[$index]);
+        $itemsArr = array_values($itemsArr);
+
+        $cartEntity->setItems($itemsArr);
+        $em->flush();
+
+        $this->addFlash('success', 'Item claimed successfully.');
+        return $this->redirectToRoute('cart_purchases');
+    }
+
 }

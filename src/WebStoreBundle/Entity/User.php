@@ -3,6 +3,7 @@
 namespace WebStoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -98,9 +99,8 @@ class User implements UserInterface
     private $comments;
 
     /**
-     * @var ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="WebStoreBundle\Entity\Cart", mappedBy="owner")
+     * @var Cart $cart
+     * @ORM\OneToOne(targetEntity="WebStoreBundle\Entity\Cart", mappedBy="owner")
      */
     private $cart;
 
