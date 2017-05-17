@@ -19,8 +19,6 @@ class RegisterController extends Controller
      */
     public function registerAction(Request $request)
     {
-        //TODO Products service check
-
         if($this->getUser()){
             $this->addFlash('danger','You are already registered.');
             return $this->redirectToRoute('index');

@@ -33,7 +33,7 @@ class CartController extends Controller
         }
 
 
-        return $this->render('default/cart.html.twig', array(
+        return $this->render('cart/cart.html.twig', array(
             'cart' => $cart,
             'totalCost' => $totalCost,
         ));
@@ -312,14 +312,12 @@ class CartController extends Controller
 
         $userItemsArr = $userItemsEntity->getItems();
 
-//        var_dump($userItemsArr);
-//        exit;
 
         $items = [];
         foreach ($userItemsArr as $userItem){
             $items[] = $userItem;
         }
-        return $this->render('default/cart_history.html.twig', array(
+        return $this->render('cart/cart_history.html.twig', array(
             'items' => $items,
         ));
     }

@@ -6,7 +6,13 @@
             <div class="panel panel-default" style="max-width: 60%">
                 <div class="panel-heading">Name: {{ item.name }}</div>
                 <div class="panel-heading">Added by: {{ item.ownerUsername }} ({{ item.getOwnerName() }})</div>
-                <div class="panel-heading">Left in stock: {{ item.getQuantity() }}</div>
+                <div class="panel-heading">Left in stock:
+                    {% if item.quantity <= 0 %}
+                        <b>OUT OF STOCK</b>
+                    {% else %}
+                        {{ item.getQuantity() }}
+                    {% endif %}
+                </div>
                 <div class="panel-heading">Added on {{ item.getDateAdded.format('d-m-y') }}</div>
                 <div class="panel-body">
                     <img src="{{ asset(item.imagePath) }}" class="img-responsive" style="width:100%" alt="Image">
@@ -16,12 +22,14 @@
                 <div class="panel-heading text-center">Price: {{ item.price }} BGN</div>
                 <div class="panel-footer">
                     {% if app.user %}
+                    {% if item.quantity > 0 %}
                         <a class="btn btn-success" href="{{ path('cart_item_add', {'id': item.id}) }}">Buy</a>
+                    {% endif %}
                 </div>
-                    {{ form_start(comment_form) }}
-                    {{ form_widget(comment_form) }}
-                    <button class="btn btn-primary" type="submit">Comment</button>
-                    {{ form_end(comment_form) }}
+                {{ form_start(comment_form) }}
+                {{ form_widget(comment_form) }}
+                <button class="btn btn-primary" type="submit">Comment</button>
+                {{ form_end(comment_form) }}
                 <hr>
                 {% endif %}
                 {% if itemComments|length > 0 %}

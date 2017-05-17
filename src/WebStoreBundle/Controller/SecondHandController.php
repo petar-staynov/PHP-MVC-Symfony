@@ -23,7 +23,7 @@ class SecondHandController extends Controller
         if ($items == null) {
             $items = [];
         }
-        return $this->render('default/second_hand_market.html.twig', array(
+        return $this->render('market/second_hand_market.html.twig', array(
             'items' => $items,
         ));
     }
@@ -63,7 +63,7 @@ class SecondHandController extends Controller
             $items = [];
         }
 
-        return $this->render('default/my_used_items.html.twig', array(
+        return $this->render('market/my_used_items.html.twig', array(
             'items' => $items,
         ));
     }
